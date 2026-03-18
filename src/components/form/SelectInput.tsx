@@ -101,10 +101,10 @@ export default function SelectInput({
           ref={dropdownRef}
           className="
             absolute z-50 w-full mt-2
-            bg-[#0f0f18] backdrop-blur-none
-            border border-white/[0.12] rounded-xl
-            shadow-[0_8px_32px_rgba(0,0,0,0.6)]
+            bg-[#0a0a14] border border-white/[0.12] rounded-xl
+            shadow-[0_8px_32px_rgba(0,0,0,0.9)]
             overflow-hidden
+            isolate
           "
         >
           <div className="max-h-64 overflow-y-auto py-1">

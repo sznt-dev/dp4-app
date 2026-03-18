@@ -12,6 +12,7 @@ import { SECTIONS, QUESTIONS_BY_SECTION, ALL_QUESTIONS } from '@/lib/questions';
 import { calculateLipp } from '@/lib/scoring/lipp';
 import { calculateBruxismo } from '@/lib/scoring/bruxismo';
 import { calculateEpworth } from '@/lib/scoring/epworth';
+import { isValidCPF, isValidPhone } from '@/lib/validation/cpf';
 
 import ProgressBar from './ProgressBar';
 import QuestionCard from './QuestionCard';
@@ -552,6 +553,34 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
     );
   }
 
+  // Validate current question value for canGoNext
+  const canGoNext = useMemo(() => {
+    if (!currentQuestion) return false;
+    const val = state.answers[currentQuestion.id];
+
+    // CPF validation
+    if (currentQuestion.type === 'cpf' && val) {
+      const digits = String(val).replace(/\D/g, '');
+      if (digits.length === 11 && !isValidCPF(String(val))) return false;
+      if (digits.length > 0 && digits.length < 11) return false;
+    }
+
+    // Phone validation
+    if (currentQuestion.type === 'phone' && val) {
+      const digits = String(val).replace(/\D/g, '');
+      if (digits.length > 0 && digits.length < 10) return false;
+      if (digits.length >= 10 && !isValidPhone(String(val))) return false;
+    }
+
+    // Email validation
+    if (currentQuestion.type === 'email' && val) {
+      const email = String(val);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
+    }
+
+    return true;
+  }, [currentQuestion, state.answers]);
+
   // No question available (shouldn't happen normally)
   if (!currentQuestion) {
     return (
@@ -592,7 +621,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
             <NavigationButtons
               onNext={goNext}
               onPrev={goPrev}
-              canGoNext={true}
+              canGoNext={canGoNext}
               canGoPrev={state.currentSection > 1 || state.currentQuestionIndex > 0}
               isLastQuestion={
                 state.currentSection === 5 &&
