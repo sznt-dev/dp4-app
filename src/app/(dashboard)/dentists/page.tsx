@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Plus, X, Check, UserX, UserCheck } from 'lucide-react';
+import { Plus, X, Check, UserX, UserCheck, Trash2, Copy, Eye, EyeOff } from 'lucide-react';
 
 interface Dentist {
   id: string;
@@ -23,6 +23,9 @@ export default function DentistsPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', clinic_name: '' });
   const [formError, setFormError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [createdCredentials, setCreatedCredentials] = useState<{ email: string; password: string } | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     loadDentists();
@@ -55,6 +58,10 @@ export default function DentistsPage() {
       return;
     }
 
+    const result = await res.json();
+    if (result.defaultPassword) {
+      setCreatedCredentials({ email: formData.email, password: result.defaultPassword });
+    }
     setFormData({ name: '', email: '', phone: '', clinic_name: '' });
     setShowForm(false);
     setSaving(false);
@@ -73,6 +80,21 @@ export default function DentistsPage() {
         prev.map((d) => (d.id === id ? { ...d, is_active: !currentActive } : d))
       );
     }
+  }, []);
+
+  const handleDelete = useCallback(async (id: string, name: string) => {
+    if (!confirm(`Tem certeza que deseja excluir o dentista "${name}"? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+    setDeleting(id);
+    const res = await fetch(`/api/dentists?id=${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      setDentists((prev) => prev.filter((d) => d.id !== id));
+    } else {
+      const err = await res.json();
+      alert(err.error || 'Erro ao excluir');
+    }
+    setDeleting(null);
   }, []);
 
   if (loading) {
@@ -100,6 +122,53 @@ export default function DentistsPage() {
           {showForm ? 'Cancelar' : 'Novo Dentista'}
         </button>
       </div>
+
+      {/* Created credentials modal */}
+      {createdCredentials && (
+        <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/25 p-5 space-y-3">
+          <h3 className="text-base font-semibold text-emerald-400">Dentista criado com sucesso!</h3>
+          <p className="text-sm text-foreground/70">Envie estas credenciais para o dentista acessar o painel:</p>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 bg-black/30 rounded-lg px-3 py-2.5">
+              <span className="text-xs text-foreground/50 w-14">Email:</span>
+              <span className="text-sm text-foreground font-mono flex-1">{createdCredentials.email}</span>
+              <button
+                onClick={() => navigator.clipboard.writeText(createdCredentials.email)}
+                className="p-1 text-foreground/40 hover:text-foreground/70 transition-colors"
+                title="Copiar"
+              >
+                <Copy className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <div className="flex items-center gap-2 bg-black/30 rounded-lg px-3 py-2.5">
+              <span className="text-xs text-foreground/50 w-14">Senha:</span>
+              <span className="text-sm text-foreground font-mono flex-1">
+                {showPassword ? createdCredentials.password : '••••••••••'}
+              </span>
+              <button
+                onClick={() => setShowPassword(!showPassword)}
+                className="p-1 text-foreground/40 hover:text-foreground/70 transition-colors"
+                title={showPassword ? 'Ocultar' : 'Mostrar'}
+              >
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                onClick={() => navigator.clipboard.writeText(createdCredentials.password)}
+                className="p-1 text-foreground/40 hover:text-foreground/70 transition-colors"
+                title="Copiar"
+              >
+                <Copy className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={() => { setCreatedCredentials(null); setShowPassword(false); }}
+            className="text-xs text-foreground/50 hover:text-foreground/70 transition-colors mt-2"
+          >
+            Fechar
+          </button>
+        </div>
+      )}
 
       {/* Create form */}
       {showForm && (
@@ -215,6 +284,16 @@ export default function DentistsPage() {
                 >
                   {dentist.is_active ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
                 </button>
+                {dentist.id !== '00000000-0000-0000-0000-000000000001' && (
+                  <button
+                    onClick={() => handleDelete(dentist.id, dentist.name)}
+                    disabled={deleting === dentist.id}
+                    className="p-2 rounded-lg text-muted-foreground/80 hover:text-red-400 hover:bg-red-500/5 transition-colors disabled:opacity-50"
+                    title="Excluir dentista"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
           ))}

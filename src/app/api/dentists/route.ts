@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { NextResponse } from 'next/server';
 import { checkRateLimit, getClientId, rateLimitResponse } from '@/lib/security/rate-limit';
 import { sanitizeString, isValidEmail, isValidUUID } from '@/lib/security/validate';
@@ -96,13 +97,47 @@ export async function POST(request: Request) {
       slug = `${baseSlug}-${suffix}`;
     }
 
+    // Generate default password: dp4 + first name lowercase + 2026
+    const firstName = name.split(' ')[0].toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const defaultPassword = `dp4${firstName}2026`;
+
+    // Create auth user via service role
+    let authUserId: string | null = null;
+    try {
+      const serviceClient = createServiceClient();
+      const { data: authUser, error: authError } = await serviceClient.auth.admin.createUser({
+        email,
+        password: defaultPassword,
+        email_confirm: true,
+      });
+      if (authError) {
+        if (authError.message?.includes('already been registered')) {
+          return NextResponse.json(
+            { error: 'Email já cadastrado' },
+            { status: 409 }
+          );
+        }
+        return NextResponse.json({ error: authError.message }, { status: 500 });
+      }
+      authUserId = authUser.user.id;
+    } catch (e) {
+      return NextResponse.json({ error: 'Erro ao criar usuário de acesso' }, { status: 500 });
+    }
+
+    // Create dentist record linked to auth user
     const { data, error } = await supabase
       .from('dp4_dentists')
-      .insert({ name, email, phone, clinic_name, unique_slug: slug })
+      .insert({ id: authUserId, name, email, phone, clinic_name, unique_slug: slug })
       .select()
       .single();
 
     if (error) {
+      // Rollback auth user if dentist creation fails
+      try {
+        const serviceClient = createServiceClient();
+        await serviceClient.auth.admin.deleteUser(authUserId!);
+      } catch { /* best effort */ }
       if (error.code === '23505') {
         return NextResponse.json(
           { error: 'Email já cadastrado' },
@@ -112,7 +147,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json({ ...data, defaultPassword }, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
@@ -158,6 +193,64 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json(data);
+  } catch {
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  // Rate limit + auth
+  const clientId3 = getClientId(request);
+  const rateCheck3 = checkRateLimit(clientId3, 'admin');
+  if (!rateCheck3.allowed) return rateLimitResponse(rateCheck3.retryAfterSeconds);
+  try { await requireAuth(); } catch (e) { return authErrorResponse(e); }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id || !isValidUUID(id)) {
+      return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+    }
+
+    // Prevent deleting the main admin/dev dentist
+    if (id === '00000000-0000-0000-0000-000000000001') {
+      return NextResponse.json({ error: 'Não é possível excluir o admin principal' }, { status: 403 });
+    }
+
+    const supabase = await createClient();
+
+    // Check if dentist has patients
+    const { data: patients } = await supabase
+      .from('dp4_patients')
+      .select('id')
+      .eq('dentist_id', id)
+      .limit(1);
+
+    if (patients && patients.length > 0) {
+      return NextResponse.json(
+        { error: 'Não é possível excluir dentista com pacientes. Desative-o primeiro.' },
+        { status: 409 }
+      );
+    }
+
+    // Delete dentist record
+    const { error } = await supabase
+      .from('dp4_dentists')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Delete auth user
+    try {
+      const serviceClient = createServiceClient();
+      await serviceClient.auth.admin.deleteUser(id);
+    } catch { /* best effort — dentist record already gone */ }
+
+    return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
