@@ -75,7 +75,7 @@ export default function QuestionCard({
         <h2 className="text-lg sm:text-xl font-medium text-foreground leading-relaxed mb-1">
           {label}
           {required && (
-            <span className="text-amber-500 ml-1" aria-label="obrigatório">*</span>
+            <span className="text-amber-500 ml-1" aria-label="required">*</span>
           )}
         </h2>
 

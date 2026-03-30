@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 
 interface ScaleSegmentedProps {
@@ -18,6 +19,7 @@ export default function ScaleSegmented({
   onChange,
   disabled,
 }: ScaleSegmentedProps) {
+  const t = useTranslations('form.scale');
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const hasAnimated = useRef(false);
@@ -112,7 +114,7 @@ export default function ScaleSegmented({
                     }
               }
               aria-pressed={isSelected}
-              aria-label={`${val} de ${max}`}
+              aria-label={t('valueOfMax', { value: val, max })}
             >
               {val}
             </button>
@@ -122,8 +124,8 @@ export default function ScaleSegmented({
 
       {/* Min/Max labels */}
       <div className="flex justify-between px-2">
-        <span className="text-xs text-muted-foreground/80">Nenhuma</span>
-        <span className="text-xs text-muted-foreground/80">Extrema</span>
+        <span className="text-xs text-muted-foreground/80">{t('none')}</span>
+        <span className="text-xs text-muted-foreground/80">{t('extreme')}</span>
       </div>
 
       {/* Selected value display */}

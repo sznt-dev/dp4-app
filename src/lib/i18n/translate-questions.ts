@@ -24,7 +24,18 @@ export function translateQuestion(q: Question, t: (key: string) => string): Ques
 
   // Subsection
   if (q.subsection) {
-    const subKey = `subsections.${q.subsection.replace(/\s+/g, '')}`;
+    // Convert subsection name to camelCase key matching JSON:
+    // "Dados Pessoais" → "dadosPessoais"
+    // "SCARED — Ansiedade" → "scaredAnsiedade"
+    // "Comportamentos durante o sono" → "comportamentosDuranteOSono"
+    const camelKey = q.subsection
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // strip accents
+      .replace(/[^a-zA-Z0-9\s-]/g, '')                  // keep letters, digits, spaces, hyphens
+      .trim()
+      .split(/[\s-]+/)                                   // split by whitespace or hyphens
+      .map((word, i) => i === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join('');
+    const subKey = `subsections.${camelKey}`;
     const tSub = t(subKey);
     if (tSub !== subKey) translated.subsection = tSub;
   }

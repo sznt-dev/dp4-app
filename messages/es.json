@@ -24,7 +24,9 @@
     "admin": "Admin",
     "logout": "Cerrar sesión",
     "pdf": "PDF",
-    "compare": "Comparar"
+    "compare": "Comparar",
+    "invalidLink": "Enlace inválido",
+    "invalidLinkDescription": "Este enlace no está activo o no existe."
   },
 
   "auth": {
@@ -219,7 +221,30 @@
     "blocked": {
       "title": "Historia clínica ya completada",
       "message": "Puede cerrar esta página. El formulario de control estará disponible cuando se cumplan 90 días."
+    },
+    "questionsRemaining": "{count} restantes",
+    "allComplete": "¡Completo!",
+    "scale": {
+      "none": "Ninguna",
+      "extreme": "Extrema",
+      "valueOfMax": "{value} de {max}"
+    },
+    "painMapRegions": {
+      "frontal": "Frontal",
+      "temporalLeft": "Temporal Izquierdo",
+      "temporalRight": "Temporal Derecho",
+      "masseterLeft": "Masetero Izquierdo",
+      "masseterRight": "Masetero Derecho",
+      "trapezioLeft": "Trapecio Izquierdo",
+      "trapezioRight": "Trapecio Derecho",
+      "cervical": "Cervical"
     }
+  },
+
+  "validation": {
+    "cpfInvalid": "CPF inválido. Verifique los números.",
+    "phoneInvalid": "Teléfono inválido. Verifique el código de área y número.",
+    "phoneIncomplete": "Teléfono incompleto. Ingrese código de área + número."
   },
 
   "cpfOverlay": {
@@ -949,6 +974,39 @@
       "sometimes": "Algunas veces",
       "almostAlways": "Casi siempre",
       "always": "Siempre"
+    }
+  },
+
+  "compare": {
+    "title": "Comparativo",
+    "noCompletedForms": "No se encontraron formularios completados.",
+    "needsControlForm": "Solo 1 formulario completado. La comparación requiere el formulario de control.",
+    "firstSubmission": "1er Llenado",
+    "control": "Control",
+    "firstShort": "1o",
+    "scoresTitle": "Scores",
+    "changesInResponses": "Cambios en las respuestas",
+    "field": "Campo",
+    "noDifferences": "No se encontraron diferencias en las respuestas entre el 1er llenado y el control.",
+    "scores": {
+      "lipp": "Estrés Lipp",
+      "bruxism": "Bruxismo",
+      "epworth": "Epworth"
+    },
+    "sectionLabels": {
+      "dados_pessoais": "Datos Personales",
+      "saude_oral": "Salud Oral",
+      "saude_medica": "Salud Médica",
+      "prontuario": "Historia Clínica",
+      "neuroplasticidade": "Neuroplasticidad",
+      "pain_map": "Mapa de Dolor",
+      "orofacial": "Dolores Orofaciales",
+      "sleep_disorders": "Trastornos del Sueño",
+      "chronic_disorders": "Trastornos Crónicos",
+      "physical_measurements": "Medidas Físicas",
+      "estresse_lipp": "Estrés Lipp",
+      "grau_bruxismo": "Grado de Bruxismo",
+      "teste_epworth": "Test de Epworth"
     }
   },
 

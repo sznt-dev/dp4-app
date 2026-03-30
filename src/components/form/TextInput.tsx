@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import { isValidCPF, isValidPhone } from '@/lib/validation/cpf';
 
@@ -43,6 +44,7 @@ export default function TextInput({
   max,
   onSubmit,
 }: TextInputProps) {
+  const t = useTranslations('validation');
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -55,7 +57,7 @@ export default function TextInput({
     if (type === 'cpf') {
       const digits = val.replace(/\D/g, '');
       if (digits.length === 11 && !isValidCPF(val)) {
-        setValidationError('CPF inválido. Verifique os números.');
+        setValidationError(t('cpfInvalid'));
         return;
       }
     }
@@ -63,11 +65,11 @@ export default function TextInput({
     if (type === 'phone') {
       const digits = val.replace(/\D/g, '');
       if (digits.length >= 10 && !isValidPhone(val)) {
-        setValidationError('Telefone inválido. Verifique o DDD e número.');
+        setValidationError(t('phoneInvalid'));
         return;
       }
       if (digits.length > 0 && digits.length < 10) {
-        setValidationError('Telefone incompleto. Digite DDD + número.');
+        setValidationError(t('phoneIncomplete'));
         return;
       }
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, TrendingDown, TrendingUp, Minus, Download } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
@@ -41,25 +42,25 @@ interface ScoreComparison {
   controlClassification: string | null;
 }
 
-const SECTION_LABELS: Record<string, string> = {
-  dados_pessoais: 'Dados Pessoais',
-  saude_oral: 'Saúde Oral',
-  saude_medica: 'Saúde Médica',
-  prontuario: 'Prontuário',
-  neuroplasticidade: 'Neuroplasticidade',
-  pain_map: 'Mapa de Dor',
-  orofacial: 'Dores Orofaciais',
-  sleep_disorders: 'Distúrbios do Sono',
-  chronic_disorders: 'Transtornos Crônicos',
-  physical_measurements: 'Medidas Físicas',
-  estresse_lipp: 'Estresse Lipp',
-  grau_bruxismo: 'Grau de Bruxismo',
-  teste_epworth: 'Teste Epworth',
+const SECTION_LABEL_KEYS: Record<string, string> = {
+  dados_pessoais: 'dados_pessoais',
+  saude_oral: 'saude_oral',
+  saude_medica: 'saude_medica',
+  prontuario: 'prontuario',
+  neuroplasticidade: 'neuroplasticidade',
+  pain_map: 'pain_map',
+  orofacial: 'orofacial',
+  sleep_disorders: 'sleep_disorders',
+  chronic_disorders: 'chronic_disorders',
+  physical_measurements: 'physical_measurements',
+  estresse_lipp: 'estresse_lipp',
+  grau_bruxismo: 'grau_bruxismo',
+  teste_epworth: 'teste_epworth',
 };
 
-function formatValue(value: unknown): string {
+function formatValue(value: unknown, yesLabel: string, noLabel: string): string {
   if (value === null || value === undefined) return '—';
-  if (typeof value === 'boolean') return value ? 'Sim' : 'Não';
+  if (typeof value === 'boolean') return value ? yesLabel : noLabel;
   if (typeof value === 'number') return String(value);
   if (typeof value === 'string') return value;
   if (Array.isArray(value)) return value.join(', ');
@@ -82,6 +83,13 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
   const [controlSub, setControlSub] = useState<Submission | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const t = useTranslations('compare');
+  const tCommon = useTranslations('common');
+  const tSections = useTranslations('compare.sectionLabels');
+  const locale = useLocale();
+  const dateLocaleMap: Record<string, string> = {
+    'pt-br': 'pt-BR', 'pt-pt': 'pt-PT', 'es': 'es', 'en': 'en-US',
+  };
 
   useEffect(() => {
     loadData();
@@ -127,9 +135,9 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
   if (!firstSub) {
     return (
       <div className="text-center py-12 space-y-4">
-        <p className="text-foreground/60">Nenhum formulário completo encontrado.</p>
+        <p className="text-foreground/60">{t('noCompletedForms')}</p>
         <button onClick={() => router.push(`/patients/${id}`)} className="text-amber-400 text-sm">
-          Voltar
+          {tCommon('back')}
         </button>
       </div>
     );
@@ -138,9 +146,9 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
   if (!controlSub) {
     return (
       <div className="text-center py-12 space-y-4">
-        <p className="text-foreground/60">Apenas 1 formulário completo. O comparativo requer o formulário de controle.</p>
+        <p className="text-foreground/60">{t('needsControlForm')}</p>
         <button onClick={() => router.push(`/patients/${id}`)} className="text-amber-400 text-sm">
-          Voltar
+          {tCommon('back')}
         </button>
       </div>
     );
@@ -148,7 +156,7 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
 
   const scores: ScoreComparison[] = [
     {
-      label: 'Estresse Lipp',
+      label: t('scores.lipp'),
       first: firstSub.lipp_score,
       control: controlSub.lipp_score,
       max: 12,
@@ -156,7 +164,7 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
       controlClassification: controlSub.lipp_classification,
     },
     {
-      label: 'Bruxismo',
+      label: t('scores.bruxism'),
       first: firstSub.bruxism_score,
       control: controlSub.bruxism_score,
       max: 20,
@@ -164,7 +172,7 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
       controlClassification: controlSub.bruxism_classification,
     },
     {
-      label: 'Epworth',
+      label: t('scores.epworth'),
       first: firstSub.epworth_score,
       control: controlSub.epworth_score,
       max: 24,
@@ -189,13 +197,13 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
 
       const fields = allKeys.map((key) => ({
         key,
-        first: formatValue(firstData[key]),
-        control: formatValue(controlData[key]),
-        changed: formatValue(firstData[key]) !== formatValue(controlData[key]),
+        first: formatValue(firstData[key], tCommon('yes'), tCommon('no')),
+        control: formatValue(controlData[key], tCommon('yes'), tCommon('no')),
+        changed: formatValue(firstData[key], tCommon('yes'), tCommon('no')) !== formatValue(controlData[key], tCommon('yes'), tCommon('no')),
       }));
 
       return {
-        title: SECTION_LABELS[col] || col,
+        title: SECTION_LABEL_KEYS[col] ? tSections(SECTION_LABEL_KEYS[col]) : col,
         fields,
         hasChanges: fields.some((f) => f.changed),
       };
@@ -203,12 +211,12 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
     .filter(Boolean) as { title: string; fields: { key: string; first: string; control: string; changed: boolean }[]; hasChanges: boolean }[];
 
   const firstDate = firstSub.completed_at
-    ? new Date(firstSub.completed_at).toLocaleDateString('pt-BR')
-    : new Date(firstSub.created_at).toLocaleDateString('pt-BR');
+    ? new Date(firstSub.completed_at).toLocaleDateString(dateLocaleMap[locale] || locale)
+    : new Date(firstSub.created_at).toLocaleDateString(dateLocaleMap[locale] || locale);
 
   const controlDate = controlSub.completed_at
-    ? new Date(controlSub.completed_at).toLocaleDateString('pt-BR')
-    : new Date(controlSub.created_at).toLocaleDateString('pt-BR');
+    ? new Date(controlSub.completed_at).toLocaleDateString(dateLocaleMap[locale] || locale)
+    : new Date(controlSub.created_at).toLocaleDateString(dateLocaleMap[locale] || locale);
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -221,7 +229,7 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
           <ArrowLeft className="w-5 h-5 text-foreground/50" />
         </button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-foreground">Comparativo</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
           <p className="text-base text-foreground/60 mt-0.5">{patientName}</p>
         </div>
       </div>
@@ -229,18 +237,18 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
       {/* Date labels */}
       <div className="grid grid-cols-2 gap-4">
         <div className="px-4 py-3 rounded-xl bg-blue-500/5 border border-blue-500/20 text-center">
-          <p className="text-xs text-blue-400 font-medium">1o Preenchimento</p>
+          <p className="text-xs text-blue-400 font-medium">{t('firstSubmission')}</p>
           <p className="text-sm text-foreground/60">{firstDate}</p>
         </div>
         <div className="px-4 py-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-center">
-          <p className="text-xs text-emerald-400 font-medium">Controle</p>
+          <p className="text-xs text-emerald-400 font-medium">{t('control')}</p>
           <p className="text-sm text-foreground/60">{controlDate}</p>
         </div>
       </div>
 
       {/* Score comparison */}
       <div className="space-y-3">
-        <h2 className="text-base font-semibold text-foreground">Scores</h2>
+        <h2 className="text-base font-semibold text-foreground">{t('scoresTitle')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {scores.map((score) => {
             const delta = score.first !== null && score.control !== null
@@ -292,9 +300,9 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
                 </div>
 
                 <div className="flex justify-between text-[10px] text-foreground/30">
-                  <span>1o</span>
+                  <span>{t('firstShort')}</span>
                   <span>/{score.max}</span>
-                  <span>Controle</span>
+                  <span>{t('control')}</span>
                 </div>
               </div>
             );
@@ -305,7 +313,7 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
       {/* Data comparison — only show sections with changes */}
       {comparisonSections.filter((s) => s.hasChanges).length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-base font-semibold text-foreground">Mudanças nas respostas</h2>
+          <h2 className="text-base font-semibold text-foreground">{t('changesInResponses')}</h2>
 
           {comparisonSections
             .filter((s) => s.hasChanges)
@@ -317,9 +325,9 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
                 <div className="divide-y divide-white/[0.04]">
                   {/* Header row */}
                   <div className="grid grid-cols-3 px-4 py-2 bg-white/[0.01]">
-                    <span className="text-xs text-foreground/40">Campo</span>
-                    <span className="text-xs text-blue-400/70 text-center">1o</span>
-                    <span className="text-xs text-emerald-400/70 text-center">Controle</span>
+                    <span className="text-xs text-foreground/40">{t('field')}</span>
+                    <span className="text-xs text-blue-400/70 text-center">{t('firstShort')}</span>
+                    <span className="text-xs text-emerald-400/70 text-center">{t('control')}</span>
                   </div>
 
                   {section.fields
@@ -339,7 +347,7 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
 
       {comparisonSections.filter((s) => s.hasChanges).length === 0 && (
         <div className="text-center py-8">
-          <p className="text-foreground/50">Nenhuma diferença encontrada nas respostas entre o 1o preenchimento e o controle.</p>
+          <p className="text-foreground/50">{t('noDifferences')}</p>
         </div>
       )}
     </div>

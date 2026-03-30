@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Users, FileCheck, Clock, Activity, Link2, Copy, Check } from 'lucide-react';
@@ -37,6 +37,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const t = useTranslations('dashboard');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
 
   useEffect(() => {
     loadDashboard();
@@ -130,8 +131,15 @@ export default function DashboardPage() {
     }
   }, [permanentLink]);
 
+  const dateLocaleMap: Record<string, string> = {
+    'pt-br': 'pt-BR',
+    'pt-pt': 'pt-PT',
+    'es': 'es',
+    'en': 'en-US',
+  };
+
   function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString('pt-BR', {
+    return new Date(dateStr).toLocaleDateString(dateLocaleMap[locale] || locale, {
       day: '2-digit',
       month: '2-digit',
       year: '2-digit',

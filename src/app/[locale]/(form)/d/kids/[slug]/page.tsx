@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { getTranslations } from 'next-intl/server';
 import KidsFormFlow from './KidsFormFlow';
 
 interface Props {
@@ -18,11 +19,12 @@ export default async function KidsFormPage({ params }: Props) {
     .single();
 
   if (!dentist) {
+    const t = await getTranslations('common');
     return (
       <div className="min-h-screen bg-[#07070C] flex items-center justify-center px-4">
         <div className="text-center space-y-3">
-          <h1 className="text-xl font-bold text-foreground">Link inválido</h1>
-          <p className="text-foreground/60">Este link não está ativo ou não existe.</p>
+          <h1 className="text-xl font-bold text-foreground">{t('invalidLink')}</h1>
+          <p className="text-foreground/60">{t('invalidLinkDescription')}</p>
         </div>
       </div>
     );

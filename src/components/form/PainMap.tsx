@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import type { PainMapData } from '@/types';
 
@@ -12,21 +13,21 @@ interface PainMapProps {
 
 interface PainRegion {
   id: keyof PainMapData;
-  label: string;
+  labelKey: string;
   shortLabel: string;
   cx: number;
   cy: number;
 }
 
 const PAIN_REGIONS: PainRegion[] = [
-  { id: 'frontal', label: 'Frontal', shortLabel: 'Fr', cx: 100, cy: 28 },
-  { id: 'temporal_left', label: 'Temporal Esquerdo', shortLabel: 'TE', cx: 55, cy: 55 },
-  { id: 'temporal_right', label: 'Temporal Direito', shortLabel: 'TD', cx: 145, cy: 55 },
-  { id: 'masseter_left', label: 'Masseter Esquerdo', shortLabel: 'ME', cx: 60, cy: 100 },
-  { id: 'masseter_right', label: 'Masseter Direito', shortLabel: 'MD', cx: 140, cy: 100 },
-  { id: 'trapezio_left', label: 'Trapézio Esquerdo', shortLabel: 'TrE', cx: 55, cy: 165 },
-  { id: 'trapezio_right', label: 'Trapézio Direito', shortLabel: 'TrD', cx: 145, cy: 165 },
-  { id: 'cervical', label: 'Cervical', shortLabel: 'Ce', cx: 100, cy: 145 },
+  { id: 'frontal', labelKey: 'frontal', shortLabel: 'Fr', cx: 100, cy: 28 },
+  { id: 'temporal_left', labelKey: 'temporalLeft', shortLabel: 'TE', cx: 55, cy: 55 },
+  { id: 'temporal_right', labelKey: 'temporalRight', shortLabel: 'TD', cx: 145, cy: 55 },
+  { id: 'masseter_left', labelKey: 'masseterLeft', shortLabel: 'ME', cx: 60, cy: 100 },
+  { id: 'masseter_right', labelKey: 'masseterRight', shortLabel: 'MD', cx: 140, cy: 100 },
+  { id: 'trapezio_left', labelKey: 'trapezioLeft', shortLabel: 'TrE', cx: 55, cy: 165 },
+  { id: 'trapezio_right', labelKey: 'trapezioRight', shortLabel: 'TrD', cx: 145, cy: 165 },
+  { id: 'cervical', labelKey: 'cervical', shortLabel: 'Ce', cx: 100, cy: 145 },
 ];
 
 const DEFAULT_PAIN_MAP: PainMapData = {
@@ -49,6 +50,7 @@ function getPainColor(val: number): string {
 }
 
 export default function PainMap({ value, onChange, disabled }: PainMapProps) {
+  const t = useTranslations('form.painMapRegions');
   const svgRef = useRef<SVGSVGElement>(null);
   const pointRefs = useRef<(SVGGElement | null)[]>([]);
   const hasAnimated = useRef(false);
@@ -148,7 +150,7 @@ export default function PainMap({ value, onChange, disabled }: PainMapProps) {
                 className={disabled ? '' : 'cursor-pointer'}
                 role="button"
                 tabIndex={0}
-                aria-label={`${region.label}: ${val}/10`}
+                aria-label={`${t(region.labelKey)}: ${val}/10`}
               >
                 {/* Glow ring for non-zero values */}
                 {val > 0 && (
@@ -208,7 +210,7 @@ export default function PainMap({ value, onChange, disabled }: PainMapProps) {
         <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-foreground">
-              {PAIN_REGIONS.find((r) => r.id === activeRegion)?.label}
+              {t(PAIN_REGIONS.find((r) => r.id === activeRegion)?.labelKey ?? '')}
             </span>
             <span
               className="text-lg font-bold"
@@ -276,7 +278,7 @@ export default function PainMap({ value, onChange, disabled }: PainMapProps) {
               onClick={() => handleRegionClick(region.id)}
               className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors text-left"
             >
-              <span className="text-xs text-foreground/60">{region.label}</span>
+              <span className="text-xs text-foreground/60">{t(region.labelKey)}</span>
               <span
                 className="text-sm font-bold"
                 style={{ color: getPainColor(data[region.id]) }}

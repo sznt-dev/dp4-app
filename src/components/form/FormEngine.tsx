@@ -398,11 +398,11 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
 
     switch (sectionMeta.scoreType) {
       case 'lipp':
-        return { title: 'Estresse Lipp', result: calculateLipp(numericAnswers) };
+        return { title: t('sections.3.title'), result: calculateLipp(numericAnswers) };
       case 'bruxismo':
-        return { title: 'Grau de Bruxismo', result: calculateBruxismo(numericAnswers) };
+        return { title: t('sections.4.title'), result: calculateBruxismo(numericAnswers) };
       case 'epworth':
-        return { title: 'Teste Epworth', result: calculateEpworth(numericAnswers) };
+        return { title: t('sections.5.title'), result: calculateEpworth(numericAnswers) };
       default:
         return null;
     }

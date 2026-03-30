@@ -24,7 +24,9 @@
     "admin": "Admin",
     "logout": "Log out",
     "pdf": "PDF",
-    "compare": "Compare"
+    "compare": "Compare",
+    "invalidLink": "Invalid link",
+    "invalidLinkDescription": "This link is not active or does not exist."
   },
 
   "auth": {
@@ -219,7 +221,30 @@
     "blocked": {
       "title": "Record already submitted",
       "message": "You may close this page. The follow-up form will be available after 90 days."
+    },
+    "questionsRemaining": "{count} remaining",
+    "allComplete": "Complete!",
+    "scale": {
+      "none": "None",
+      "extreme": "Extreme",
+      "valueOfMax": "{value} of {max}"
+    },
+    "painMapRegions": {
+      "frontal": "Frontal",
+      "temporalLeft": "Left Temporal",
+      "temporalRight": "Right Temporal",
+      "masseterLeft": "Left Masseter",
+      "masseterRight": "Right Masseter",
+      "trapezioLeft": "Left Trapezius",
+      "trapezioRight": "Right Trapezius",
+      "cervical": "Cervical"
     }
+  },
+
+  "validation": {
+    "cpfInvalid": "Invalid CPF. Please check the numbers.",
+    "phoneInvalid": "Invalid phone number. Please check the area code and number.",
+    "phoneIncomplete": "Incomplete phone number. Enter area code + number."
   },
 
   "cpfOverlay": {
@@ -949,6 +974,39 @@
       "sometimes": "Sometimes",
       "almostAlways": "Almost always",
       "always": "Always"
+    }
+  },
+
+  "compare": {
+    "title": "Comparison",
+    "noCompletedForms": "No completed forms found.",
+    "needsControlForm": "Only 1 completed form. The comparison requires the follow-up form.",
+    "firstSubmission": "1st Submission",
+    "control": "Follow-up",
+    "firstShort": "1st",
+    "scoresTitle": "Scores",
+    "changesInResponses": "Changes in responses",
+    "field": "Field",
+    "noDifferences": "No differences found in the responses between the 1st submission and the follow-up.",
+    "scores": {
+      "lipp": "LIPP Stress",
+      "bruxism": "Bruxism",
+      "epworth": "Epworth"
+    },
+    "sectionLabels": {
+      "dados_pessoais": "Personal Data",
+      "saude_oral": "Oral Health",
+      "saude_medica": "Medical History",
+      "prontuario": "Record",
+      "neuroplasticidade": "Neuroplasticity",
+      "pain_map": "Pain Map",
+      "orofacial": "Orofacial Pain",
+      "sleep_disorders": "Sleep Disorders",
+      "chronic_disorders": "Chronic Disorders",
+      "physical_measurements": "Physical Measurements",
+      "estresse_lipp": "LIPP Stress",
+      "grau_bruxismo": "Bruxism Grade",
+      "teste_epworth": "Epworth Test"
     }
   },
 

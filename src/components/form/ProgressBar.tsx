@@ -54,7 +54,7 @@ export default function ProgressBar({
         </span>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">
-            {remaining > 0 ? `${remaining} restantes` : 'Completo!'}
+            {remaining > 0 ? t('questionsRemaining', { count: remaining }) : t('allComplete')}
           </span>
           <LanguageSwitcher />
         </div>

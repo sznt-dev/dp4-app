@@ -24,7 +24,13 @@ export default function LanguageSwitcher() {
   }, []);
 
   const handleSelect = (newLocale: Locale) => {
-    document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000`;
+    if (newLocale === locale) {
+      setOpen(false);
+      return;
+    }
+    // Set cookie so next-intl remembers the choice on future visits
+    document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
+    // Navigate to same page in new locale (client-side, no full reload)
     router.replace(pathname, { locale: newLocale });
     setOpen(false);
   };
