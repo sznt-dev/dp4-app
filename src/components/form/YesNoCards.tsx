@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import { Check, X } from 'lucide-react';
 
@@ -11,6 +12,7 @@ interface YesNoCardsProps {
 }
 
 export default function YesNoCards({ value, onChange, disabled }: YesNoCardsProps) {
+  const t = useTranslations('common');
   const containerRef = useRef<HTMLDivElement>(null);
   const yesRef = useRef<HTMLButtonElement>(null);
   const noRef = useRef<HTMLButtonElement>(null);
@@ -95,7 +97,7 @@ export default function YesNoCards({ value, onChange, disabled }: YesNoCardsProp
             ${value === true ? 'text-emerald-400' : 'text-foreground/70'}
           `}
         >
-          Sim
+          {t('yes')}
         </span>
       </button>
 
@@ -133,7 +135,7 @@ export default function YesNoCards({ value, onChange, disabled }: YesNoCardsProp
             ${value === false ? 'text-red-400' : 'text-foreground/70'}
           `}
         >
-          Não
+          {t('no')}
         </span>
       </button>
     </div>

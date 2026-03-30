@@ -8,7 +8,9 @@ export interface FormEngineHandle {
   loadSavedState: (answers: Record<string, unknown>, section: number, questionIndex: number) => void;
   updateSubmissionId: (id: string) => void;
 }
+import { useTranslations } from 'next-intl';
 import { SECTIONS, QUESTIONS_BY_SECTION, ALL_QUESTIONS } from '@/lib/questions';
+import { translateQuestions } from '@/lib/i18n/translate-questions';
 import { calculateLipp } from '@/lib/scoring/lipp';
 import { calculateBruxismo } from '@/lib/scoring/bruxismo';
 import { calculateEpworth } from '@/lib/scoring/epworth';
@@ -72,12 +74,48 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
   const activeSections = customSections || SECTIONS;
   const activeQuestionsBySection = customQuestionsBySection || QUESTIONS_BY_SECTION;
   const activeAllQuestions = customAllQuestions || ALL_QUESTIONS;
+
+  // i18n: translate sections and questions at runtime
+  const t = useTranslations();
+
+  const translatedSections = useMemo(() => {
+    return activeSections.map(s => {
+      const titleKey = `sections.${s.section}.title`;
+      const descKey = `sections.${s.section}.description`;
+      const tTitle = t(titleKey);
+      const tDesc = t(descKey);
+      return {
+        ...s,
+        title: tTitle !== titleKey ? tTitle : s.title,
+        description: tDesc !== descKey ? tDesc : s.description,
+      };
+    });
+  }, [activeSections, t]);
+
+  const translatedQuestionsBySection = useMemo(() => {
+    const result: Record<number, Question[]> = {};
+    for (const [section, questions] of Object.entries(activeQuestionsBySection)) {
+      result[Number(section)] = translateQuestions(questions, (key) => {
+        const translated = t(key);
+        return translated;
+      });
+    }
+    return result;
+  }, [activeQuestionsBySection, t]);
+
+  const translatedAllQuestions = useMemo(() => {
+    return translateQuestions(activeAllQuestions, (key) => {
+      const translated = t(key);
+      return translated;
+    });
+  }, [activeAllQuestions, t]);
+
   const [state, setState] = useState<FormState>({
     submissionId,
     currentSection: initialSection,
     currentQuestionIndex: initialQuestionIndex,
     answers: { ...initialAnswers },
-    totalQuestions: activeAllQuestions.length,
+    totalQuestions: translatedAllQuestions.length,
     answeredQuestions: Object.keys(initialAnswers).length,
     isTransitioning: false,
     direction: 'forward',
@@ -106,20 +144,20 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
 
   // Get questions for current section, filtering by conditionals
   const currentSectionQuestions = useMemo(() => {
-    const questions = activeQuestionsBySection[state.currentSection] || [];
+    const questions = translatedQuestionsBySection[state.currentSection] || [];
     return questions.filter((q) => {
       if (!q.conditionalOn) return true;
       const depValue = state.answers[q.conditionalOn.questionId];
       return depValue === q.conditionalOn.value;
     });
-  }, [state.currentSection, state.answers]);
+  }, [state.currentSection, state.answers, translatedQuestionsBySection]);
 
   // Current question
   const currentQuestion = currentSectionQuestions[state.currentQuestionIndex] || null;
 
   // Count answered questions globally
   const answeredCount = useMemo(() => {
-    return activeAllQuestions.filter((q) => {
+    return translatedAllQuestions.filter((q) => {
       // Skip conditionals that don't apply
       if (q.conditionalOn) {
         const depValue = state.answers[q.conditionalOn.questionId];
@@ -127,16 +165,16 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
       }
       return state.answers[q.id] !== undefined && state.answers[q.id] !== '' && state.answers[q.id] !== null;
     }).length;
-  }, [state.answers]);
+  }, [state.answers, translatedAllQuestions]);
 
   // Total visible questions (excluding hidden conditionals)
   const totalVisible = useMemo(() => {
-    return activeAllQuestions.filter((q) => {
+    return translatedAllQuestions.filter((q) => {
       if (!q.conditionalOn) return true;
       const depValue = state.answers[q.conditionalOn.questionId];
       return depValue === q.conditionalOn.value;
     }).length;
-  }, [state.answers]);
+  }, [state.answers, translatedAllQuestions]);
 
   // Check if current question has a value
   const hasCurrentValue = useMemo(() => {
@@ -261,7 +299,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
       });
     } else {
       // Section complete
-      const sectionMeta = activeSections.find((s) => s.section === state.currentSection);
+      const sectionMeta = translatedSections.find((s) => s.section === state.currentSection);
 
       if (sectionMeta?.scorable) {
         // Show score result before transitioning
@@ -308,7 +346,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
     } else if (state.currentSection > 1) {
       // Go to previous section's last question
       const prevSection = state.currentSection - 1;
-      const prevQuestions = activeQuestionsBySection[prevSection] || [];
+      const prevQuestions = translatedQuestionsBySection[prevSection] || [];
       const filteredPrev = prevQuestions.filter((q) => {
         if (!q.conditionalOn) return true;
         const depValue = state.answers[q.conditionalOn.questionId];
@@ -350,7 +388,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
   const currentScoreResult = useMemo(() => {
     if (!showScoreResult) return null;
 
-    const sectionMeta = activeSections.find((s) => s.section === state.currentSection);
+    const sectionMeta = translatedSections.find((s) => s.section === state.currentSection);
     if (!sectionMeta?.scorable) return null;
 
     const numericAnswers: Record<string, number> = {};
@@ -379,7 +417,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
       return (
         <div className="px-4 py-3 rounded-xl bg-white/[0.03] border border-amber-500/20 text-foreground/80 text-base">
           {String(val || '—')}
-          <p className="text-xs text-amber-400/60 mt-1">Este campo não pode ser alterado no controle</p>
+          <p className="text-xs text-amber-400/60 mt-1">{t('form.lockedFieldHint')}</p>
         </div>
       );
     }
@@ -511,14 +549,14 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
 
   // Section transition overlay
   if (showSectionTransition && pendingSection !== null) {
-    const meta = activeSections.find((s) => s.section === pendingSection);
+    const meta = translatedSections.find((s) => s.section === pendingSection);
     if (meta) {
       return (
         <SectionTransition
           title={meta.title}
           description={meta.description}
           sectionNumber={meta.section}
-          totalSections={activeSections.length}
+          totalSections={translatedSections.length}
           icon={meta.icon}
           onComplete={handleSectionTransitionComplete}
         />
@@ -546,7 +584,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
               focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50
             "
           >
-            Continuar →
+            {t('common.continue')}
           </button>
         </div>
       </div>
@@ -585,7 +623,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
   if (!currentQuestion) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
-        Carregando...
+        {t('common.loading')}
       </div>
     );
   }
@@ -598,7 +636,7 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
       {/* Progress bar */}
       <ProgressBar
         currentSection={state.currentSection}
-        totalSections={activeSections.length}
+        totalSections={translatedSections.length}
         answeredQuestions={answeredCount}
         totalQuestions={totalVisible}
       />

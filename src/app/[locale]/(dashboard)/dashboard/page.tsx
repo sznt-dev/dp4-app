@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Users, FileCheck, Clock, Activity, Link2, Copy, Check } from 'lucide-react';
 
@@ -34,6 +35,8 @@ export default function DashboardPage() {
   const [permanentLink, setPermanentLink] = useState('');
   const [copied, setCopied] = useState(false);
   const router = useRouter();
+  const t = useTranslations('dashboard');
+  const tCommon = useTranslations('common');
 
   useEffect(() => {
     loadDashboard();
@@ -109,7 +112,7 @@ export default function DashboardPage() {
           status: s.status,
           created_at: s.created_at,
           completed_at: s.completed_at,
-          patient_name: patientMap.get(s.patient_id) || 'Sem nome',
+          patient_name: patientMap.get(s.patient_id) || t('noName'),
           bruxism_score: s.bruxism_score,
           bruxism_classification: s.bruxism_classification,
         }))
@@ -138,10 +141,10 @@ export default function DashboardPage() {
   }
 
   const statCards = [
-    { label: 'Pacientes', value: stats.totalPatients, icon: <Users className="w-5 h-5" />, color: 'text-blue-400' },
-    { label: 'Completos', value: stats.completedForms, icon: <FileCheck className="w-5 h-5" />, color: 'text-emerald-400' },
-    { label: 'Em andamento', value: stats.pendingForms, icon: <Clock className="w-5 h-5" />, color: 'text-amber-400' },
-    { label: 'Score bruxismo médio', value: stats.avgBruxismScore, icon: <Activity className="w-5 h-5" />, color: 'text-purple-400' },
+    { label: t('stats.patients'), value: stats.totalPatients, icon: <Users className="w-5 h-5" />, color: 'text-blue-400' },
+    { label: t('stats.completed'), value: stats.completedForms, icon: <FileCheck className="w-5 h-5" />, color: 'text-emerald-400' },
+    { label: t('stats.inProgress'), value: stats.pendingForms, icon: <Clock className="w-5 h-5" />, color: 'text-amber-400' },
+    { label: t('stats.avgBruxismScore'), value: stats.avgBruxismScore, icon: <Activity className="w-5 h-5" />, color: 'text-purple-400' },
   ];
 
   if (loading) {
@@ -155,8 +158,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-base text-foreground/60 mt-1">Visão geral dos prontuários</p>
+        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
+        <p className="text-base text-foreground/60 mt-1">{t('subtitle')}</p>
       </div>
 
       {/* Stats */}
@@ -179,8 +182,8 @@ export default function DashboardPage() {
           {/* Adult link */}
           <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-5 space-y-3">
             <div>
-              <h2 className="text-sm font-semibold text-foreground">Link Adulto</h2>
-              <p className="text-sm text-foreground/60 mt-0.5">Prontuário para pacientes adultos</p>
+              <h2 className="text-sm font-semibold text-foreground">{t('links.adultTitle')}</h2>
+              <p className="text-sm text-foreground/60 mt-0.5">{t('links.adultDescription')}</p>
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -200,8 +203,8 @@ export default function DashboardPage() {
           {/* Kids link */}
           <div className="rounded-xl bg-white/[0.02] border border-white/[0.06] p-5 space-y-3">
             <div>
-              <h2 className="text-sm font-semibold text-foreground">Link Kids</h2>
-              <p className="text-sm text-foreground/60 mt-0.5">Questionário infantil (pais preenchem)</p>
+              <h2 className="text-sm font-semibold text-foreground">{t('links.kidsTitle')}</h2>
+              <p className="text-sm text-foreground/60 mt-0.5">{t('links.kidsDescription')}</p>
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -226,19 +229,19 @@ export default function DashboardPage() {
 
       {/* Recent activity */}
       <div className="space-y-4">
-        <h2 className="text-base font-semibold text-foreground">Atividade recente</h2>
+        <h2 className="text-base font-semibold text-foreground">{t('recentActivity')}</h2>
 
         {recent.length === 0 ? (
-          <p className="text-sm text-muted-foreground/80 py-8 text-center">Nenhum formulário preenchido ainda.</p>
+          <p className="text-sm text-muted-foreground/80 py-8 text-center">{t('noFormsYet')}</p>
         ) : (
           <div className="rounded-xl border border-white/[0.06] overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50">Paciente</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50">Status</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50 hidden md:table-cell">Bruxismo</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50 hidden md:table-cell">Data</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50">{t('tableHeaders.patient')}</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50">{t('tableHeaders.status')}</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50 hidden md:table-cell">{t('tableHeaders.bruxism')}</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-foreground/50 hidden md:table-cell">{t('tableHeaders.date')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -261,7 +264,7 @@ export default function DashboardPage() {
                             : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                         }`}
                       >
-                        {sub.status === 'completed' ? 'Completo' : 'Em andamento'}
+                        {sub.status === 'completed' ? t('statusComplete') : t('statusInProgress')}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-muted-foreground/80 hidden md:table-cell">

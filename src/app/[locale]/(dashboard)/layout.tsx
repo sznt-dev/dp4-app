@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import {
   LayoutDashboard,
@@ -12,19 +13,20 @@ import {
   Stethoscope,
   ScrollText,
 } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   href: string;
   icon: React.ReactNode;
   admin?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { label: 'Pacientes', href: '/patients', icon: <Users className="w-5 h-5" /> },
-  { label: 'Dentistas', href: '/dentists', icon: <Stethoscope className="w-5 h-5" />, admin: true },
-  { label: 'Logs', href: '/logs', icon: <ScrollText className="w-5 h-5" />, admin: true },
+  { labelKey: 'dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+  { labelKey: 'patients', href: '/patients', icon: <Users className="w-5 h-5" /> },
+  { labelKey: 'dentists', href: '/dentists', icon: <Stethoscope className="w-5 h-5" />, admin: true },
+  { labelKey: 'logs', href: '/logs', icon: <ScrollText className="w-5 h-5" />, admin: true },
 ];
 
 export default function DashboardLayout({
@@ -32,6 +34,8 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -41,7 +45,7 @@ export default function DashboardLayout({
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setUserName(user.email?.split('@')[0] || 'Dentista');
+        setUserName(user.email?.split('@')[0] || tCommon('dentist'));
       }
     });
   }, []);
@@ -65,8 +69,8 @@ export default function DashboardLayout({
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/[0.06]">
-        <h1 className="text-xl font-bold text-foreground">DP4</h1>
-        <p className="text-sm text-foreground/60 mt-0.5">Prontuário Digital</p>
+        <h1 className="text-xl font-bold text-foreground">{t('appTitle')}</h1>
+        <p className="text-sm text-foreground/60 mt-0.5">{t('appSubtitle')}</p>
       </div>
 
       {/* Navigation */}
@@ -89,7 +93,7 @@ export default function DashboardLayout({
               `}
             >
               {item.icon}
-              {item.label}
+              {t(item.labelKey)}
             </button>
           );
         })}
@@ -117,7 +121,7 @@ export default function DashboardLayout({
                 `}
               >
                 {item.icon}
-                {item.label}
+                {t(item.labelKey)}
               </button>
             );
           })}
@@ -127,15 +131,18 @@ export default function DashboardLayout({
       {/* User + Logout */}
       <div className="px-3 py-4 border-t border-white/[0.06] space-y-2">
         <div className="px-3 py-2">
+          <LanguageSwitcher />
+        </div>
+        <div className="px-3 py-2">
           <p className="text-sm font-medium text-foreground truncate">{userName}</p>
-          <p className="text-sm text-foreground/50">Dentista</p>
+          <p className="text-sm text-foreground/50">{tCommon('dentist')}</p>
         </div>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-muted-foreground/90 hover:text-red-400 hover:bg-red-500/5 transition-colors duration-200"
         >
           <LogOut className="w-4 h-4" />
-          Sair
+          {tCommon('logout')}
         </button>
       </div>
     </div>

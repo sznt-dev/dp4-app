@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 
 export default function Home() {
+  const t = useTranslations('landing');
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -38,16 +40,16 @@ export default function Home() {
           ref={logoRef}
           className="text-6xl font-bold text-gradient-amber opacity-0"
         >
-          DP4
+          {t('title')}
         </h1>
         <p
           ref={subtitleRef}
           className="text-lg text-muted-foreground max-w-md opacity-0"
         >
-          Prontuário Digital de Bruxismo
+          {t('subtitle')}
         </p>
         <p className="text-sm text-muted-foreground/80 mt-8">
-          Em desenvolvimento
+          {t('inDevelopment')}
         </p>
       </main>
     </div>

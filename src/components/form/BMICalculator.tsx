@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 
 interface BMIData {
@@ -16,12 +17,12 @@ interface BMICalculatorProps {
   disabled?: boolean;
 }
 
-function calculateBMI(pesoStr: string, alturaStr: string): { imc: number | null; classificacao: string } {
+function calculateBMIValue(pesoStr: string, alturaStr: string): { imc: number | null; classificacaoKey: string } {
   const peso = parseFloat(pesoStr.replace(',', '.'));
   const alturaRaw = parseFloat(alturaStr.replace(',', '.'));
 
   if (!peso || !alturaRaw || peso <= 0 || alturaRaw <= 0) {
-    return { imc: null, classificacao: '' };
+    return { imc: null, classificacaoKey: '' };
   }
 
   // Auto-detect: if > 3, treat as cm; otherwise, meters
@@ -29,15 +30,15 @@ function calculateBMI(pesoStr: string, alturaStr: string): { imc: number | null;
   const imc = peso / (alturaM * alturaM);
   const imcRounded = Math.round(imc * 10) / 10;
 
-  let classificacao = '';
-  if (imc < 18.5) classificacao = 'Abaixo do peso';
-  else if (imc < 25) classificacao = 'Peso normal';
-  else if (imc < 30) classificacao = 'Sobrepeso';
-  else if (imc < 35) classificacao = 'Obesidade Grau I';
-  else if (imc < 40) classificacao = 'Obesidade Grau II';
-  else classificacao = 'Obesidade Grau III';
+  let classificacaoKey = '';
+  if (imc < 18.5) classificacaoKey = 'underweight';
+  else if (imc < 25) classificacaoKey = 'normal';
+  else if (imc < 30) classificacaoKey = 'overweight';
+  else if (imc < 35) classificacaoKey = 'obesityI';
+  else if (imc < 40) classificacaoKey = 'obesityII';
+  else classificacaoKey = 'obesityIII';
 
-  return { imc: imcRounded, classificacao };
+  return { imc: imcRounded, classificacaoKey };
 }
 
 function getBMIColor(imc: number | null): string {
@@ -50,6 +51,7 @@ function getBMIColor(imc: number | null): string {
 }
 
 export default function BMICalculator({ value, onChange, disabled }: BMICalculatorProps) {
+  const t = useTranslations('form.bmi');
   const resultRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
   const [prevIMC, setPrevIMC] = useState<number | null>(null);
@@ -64,12 +66,12 @@ export default function BMICalculator({ value, onChange, disabled }: BMICalculat
   // Calculate BMI on input change
   const handleFieldChange = (field: 'peso' | 'altura', val: string) => {
     const newData = { ...data, [field]: val };
-    const { imc, classificacao } = calculateBMI(
+    const { imc, classificacaoKey } = calculateBMIValue(
       field === 'peso' ? val : data.peso,
       field === 'altura' ? val : data.altura
     );
     newData.imc = imc;
-    newData.classificacao = classificacao;
+    newData.classificacao = classificacaoKey ? t(`classifications.${classificacaoKey}`) : '';
     onChange(newData);
   };
 
@@ -113,14 +115,14 @@ export default function BMICalculator({ value, onChange, disabled }: BMICalculat
     <div className="space-y-5">
       {/* Weight input */}
       <div className="space-y-1.5">
-        <label className="text-sm text-muted-foreground/90">Peso (kg)</label>
+        <label className="text-sm text-muted-foreground/90">{t('weightLabel')}</label>
         <div className="border-2 border-white/[0.08] rounded-xl px-4 py-3 focus-within:border-amber-500/40 transition-colors">
           <input
             type="text"
             inputMode="decimal"
             value={data.peso}
             onChange={(e) => handleFieldChange('peso', e.target.value.replace(/[^0-9.,]/g, ''))}
-            placeholder="Ex: 72"
+            placeholder={t('weightPlaceholder')}
             disabled={disabled}
             className="w-full bg-transparent text-foreground text-lg focus:outline-none placeholder:text-muted-foreground/80"
           />
@@ -129,14 +131,14 @@ export default function BMICalculator({ value, onChange, disabled }: BMICalculat
 
       {/* Height input */}
       <div className="space-y-1.5">
-        <label className="text-sm text-muted-foreground/90">Altura (cm ou m)</label>
+        <label className="text-sm text-muted-foreground/90">{t('heightLabel')}</label>
         <div className="border-2 border-white/[0.08] rounded-xl px-4 py-3 focus-within:border-amber-500/40 transition-colors">
           <input
             type="text"
             inputMode="decimal"
             value={data.altura}
             onChange={(e) => handleFieldChange('altura', e.target.value.replace(/[^0-9.,]/g, ''))}
-            placeholder="Ex: 175 ou 1.75"
+            placeholder={t('heightPlaceholder')}
             disabled={disabled}
             className="w-full bg-transparent text-foreground text-lg focus:outline-none placeholder:text-muted-foreground/80"
           />
@@ -150,7 +152,7 @@ export default function BMICalculator({ value, onChange, disabled }: BMICalculat
           className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-5 text-center space-y-2"
         >
           <p className="text-xs text-muted-foreground/90 uppercase tracking-wider">
-            Seu IMC
+            {t('resultLabel')}
           </p>
           <div className="flex items-baseline justify-center gap-1">
             <span
@@ -160,7 +162,7 @@ export default function BMICalculator({ value, onChange, disabled }: BMICalculat
             >
               {data.imc.toFixed(1)}
             </span>
-            <span className="text-sm text-muted-foreground/80">kg/m²</span>
+            <span className="text-sm text-muted-foreground/80">{t('unit')}</span>
           </div>
           <p
             className="text-sm font-medium"
@@ -172,11 +174,11 @@ export default function BMICalculator({ value, onChange, disabled }: BMICalculat
           {/* Visual bar */}
           <div className="flex gap-0.5 h-2 rounded-full overflow-hidden mt-3">
             {[
-              { max: 18.5, color: '#60A5FA', label: 'Abaixo' },
-              { max: 25, color: '#10B981', label: 'Normal' },
-              { max: 30, color: '#F59E0B', label: 'Sobre' },
-              { max: 35, color: '#F97316', label: 'Ob I' },
-              { max: 50, color: '#EF4444', label: 'Ob II+' },
+              { max: 18.5, color: '#60A5FA', label: t('barLabels.underweight') },
+              { max: 25, color: '#10B981', label: t('barLabels.normal') },
+              { max: 30, color: '#F59E0B', label: t('barLabels.overweight') },
+              { max: 35, color: '#F97316', label: t('barLabels.obesityI') },
+              { max: 50, color: '#EF4444', label: t('barLabels.obesityIIPlus') },
             ].map((range, i) => {
               const isActive = data.imc !== null && (
                 (i === 0 && data.imc < range.max) ||

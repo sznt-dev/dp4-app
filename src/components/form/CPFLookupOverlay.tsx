@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import { FileText, Clock, RefreshCw } from 'lucide-react';
 import type { CPFLookupStatus } from '@/types';
@@ -31,6 +32,7 @@ export default function CPFLookupOverlay({
   onStartFresh,
   onClose,
 }: CPFLookupOverlayProps) {
+  const t = useTranslations('cpfOverlay');
   const containerRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -79,8 +81,8 @@ export default function CPFLookupOverlay({
         return {
           icon: <FileText className="w-8 h-8 text-amber-400" />,
           iconBg: 'bg-amber-500/10 border-amber-500/20',
-          title: 'Formulário em andamento',
-          description: 'Encontramos um formulário que você começou a preencher. Deseja continuar de onde parou?',
+          title: t('incomplete.title'),
+          description: t('incomplete.description'),
           buttons: (
             <>
               <button
@@ -88,14 +90,14 @@ export default function CPFLookupOverlay({
                 onClick={onResume}
                 className="w-full py-4 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/25 text-sm font-semibold hover:bg-amber-500/25 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50"
               >
-                Continuar de onde parei
+                {t('incomplete.resumeButton')}
               </button>
               <button
                 type="button"
                 onClick={onStartFresh}
                 className="w-full py-4 rounded-xl bg-white/[0.03] text-muted-foreground/90 border border-white/[0.06] text-sm font-medium hover:bg-white/[0.06] transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
               >
-                Começar do zero
+                {t('incomplete.restartButton')}
               </button>
             </>
           ),
@@ -105,15 +107,15 @@ export default function CPFLookupOverlay({
         return {
           icon: <Clock className="w-8 h-8 text-blue-400" />,
           iconBg: 'bg-blue-500/10 border-blue-500/20',
-          title: 'Prontuário já preenchido',
-          description: `Seu prontuário foi preenchido em ${completedAt ? formatDate(completedAt) : '—'}. Para preencher novamente ou fazer o controle, fale com o seu dentista.`,
+          title: t('blocked.title'),
+          description: t('blocked.descriptionTemplate', { date: completedAt ? formatDate(completedAt) : '\u2014' }),
           buttons: (
             <button
               type="button"
               onClick={onClose}
               className="w-full py-4 rounded-xl bg-blue-500/15 text-blue-400 border border-blue-500/25 text-sm font-semibold hover:bg-blue-500/25 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
             >
-              Entendi
+              {t('blocked.closeButton')}
             </button>
           ),
         };
@@ -122,8 +124,8 @@ export default function CPFLookupOverlay({
         return {
           icon: <RefreshCw className="w-8 h-8 text-emerald-400" />,
           iconBg: 'bg-emerald-500/10 border-emerald-500/20',
-          title: 'Controle disponível',
-          description: `Seu último prontuário tem mais de 90 dias. Deseja preencher o formulário de controle?`,
+          title: t('controlEligible.title'),
+          description: t('controlEligible.description'),
           buttons: (
             <>
               <button
@@ -131,14 +133,14 @@ export default function CPFLookupOverlay({
                 onClick={onStartFresh}
                 className="w-full py-4 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 text-sm font-semibold hover:bg-emerald-500/25 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
               >
-                Preencher controle
+                {t('controlEligible.fillButton')}
               </button>
               <button
                 type="button"
                 onClick={onClose}
                 className="w-full py-4 rounded-xl bg-white/[0.03] text-muted-foreground/90 border border-white/[0.06] text-sm font-medium hover:bg-white/[0.06] transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
               >
-                Agora não
+                {t('controlEligible.laterButton')}
               </button>
             </>
           ),

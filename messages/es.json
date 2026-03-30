@@ -1,0 +1,959 @@
+{
+  "common": {
+    "yes": "Sí",
+    "no": "No",
+    "next": "Siguiente",
+    "back": "Volver",
+    "finish": "Finalizar",
+    "continue": "Continuar →",
+    "loading": "Cargando...",
+    "close": "Cerrar",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "understood": "Entendido",
+    "notNow": "Ahora no",
+    "notApplicable": "no aplica",
+    "noValue": "—",
+    "skipQuestion": "Omitir esta pregunta →",
+    "inDevelopment": "En desarrollo",
+    "dentist": "Dentista",
+    "admin": "Admin",
+    "logout": "Cerrar sesión",
+    "pdf": "PDF",
+    "compare": "Comparar"
+  },
+
+  "auth": {
+    "title": "DP4",
+    "subtitle": "Historia Clínica Digital de Bruxismo",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "su@correo.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Iniciar sesión",
+    "loginLoading": "Iniciando sesión...",
+    "errorInvalidCredentials": "Correo electrónico o contraseña incorrectos",
+    "errorGeneric": "Error al iniciar sesión. Intente nuevamente."
+  },
+
+  "landing": {
+    "title": "DP4",
+    "subtitle": "Historia Clínica Digital de Bruxismo",
+    "inDevelopment": "En desarrollo"
+  },
+
+  "dashboard": {
+    "title": "Panel",
+    "subtitle": "Visión general de las historias clínicas",
+    "stats": {
+      "patients": "Pacientes",
+      "completed": "Completados",
+      "inProgress": "En curso",
+      "avgBruxismScore": "Puntuación media de bruxismo"
+    },
+    "links": {
+      "adultTitle": "Enlace Adultos",
+      "adultDescription": "Historia clínica para pacientes adultos",
+      "kidsTitle": "Enlace Niños",
+      "kidsDescription": "Cuestionario infantil (los padres lo completan)"
+    },
+    "recentActivity": "Actividad reciente",
+    "noFormsYet": "Ningún formulario completado aún.",
+    "tableHeaders": {
+      "patient": "Paciente",
+      "status": "Estado",
+      "bruxism": "Bruxismo",
+      "date": "Fecha"
+    },
+    "statusComplete": "Completado",
+    "statusInProgress": "En curso",
+    "noName": "Sin nombre"
+  },
+
+  "patients": {
+    "title": "Pacientes",
+    "countSuffix": "pacientes",
+    "countSuffixSingular": "paciente",
+    "tabs": {
+      "adults": "Adultos",
+      "kids": "Niños"
+    },
+    "searchPlaceholder": "Buscar por nombre o CPF...",
+    "noResults": "No se encontraron pacientes.",
+    "noPatients": "Ningún paciente registrado aún.",
+    "statusComplete": "Completado",
+    "statusInProgress": "En curso",
+    "bruxLabel": "Brux"
+  },
+
+  "patientDetail": {
+    "notFound": "Paciente no encontrado.",
+    "cpfLabel": "CPF",
+    "controlLink": "Enlace de control",
+    "controlLinkCopied": "¡Copiado!",
+    "scores": {
+      "lipp": "Estrés Lipp",
+      "bruxism": "Bruxismo",
+      "epworth": "Epworth"
+    },
+    "statusComplete": "Completado",
+    "statusInProgress": "En curso",
+    "finishedAt": "Finalizado el",
+    "startedAt": "Iniciado el",
+    "noForm": "No se encontró ningún formulario para este paciente.",
+    "deleteButton": "Eliminar historia clínica y paciente",
+    "deleteConfirm": "¿Está seguro de que desea eliminar la historia clínica de {{name}}?\n\nEsta acción no se puede deshacer. El paciente y todas las respuestas serán eliminados.",
+    "deleteDoubleConfirm": "CONFIRMACIÓN FINAL: Todos los datos de este paciente serán eliminados permanentemente. ¿Continuar?",
+    "sectionLabels": {
+      "dados_pessoais": "Datos Personales",
+      "saude_oral": "Salud Oral",
+      "saude_medica": "Salud Médica",
+      "prontuario": "Historia Clínica",
+      "neuroplasticidade": "Neuroplasticidad",
+      "pain_map": "Mapa de Dolor",
+      "orofacial": "Dolores Orofaciales",
+      "sleep_disorders": "Trastornos del Sueño",
+      "chronic_disorders": "Trastornos Crónicos",
+      "physical_measurements": "Medidas Físicas",
+      "estresse_lipp": "Estrés Lipp",
+      "grau_bruxismo": "Grado de Bruxismo",
+      "teste_epworth": "Test de Epworth"
+    },
+    "fieldLabels": {
+      "nome": "Nombre",
+      "cpf": "CPF",
+      "data_nascimento": "Fecha de nacimiento",
+      "endereco": "Dirección",
+      "celular": "Teléfono móvil",
+      "email": "Correo electrónico",
+      "contato_emergencia": "Contacto de emergencia",
+      "como_chegou": "Cómo nos encontró",
+      "tempo_escovacao": "Tiempo de cepillado",
+      "tipo_escova": "Tipo de cepillo",
+      "usa_fio_dental": "Usa hilo dental",
+      "frequencia_fio": "Frecuencia del hilo",
+      "sangramento_gengival": "Sangrado gingival",
+      "sensibilidade": "Sensibilidad",
+      "dor_dente": "Dolor de diente",
+      "bruxismo_diurno": "Bruxismo diurno",
+      "bruxismo_noturno": "Bruxismo nocturno",
+      "aperta_dentes": "Aprieta los dientes",
+      "range_dentes": "Rechina los dientes",
+      "usa_placa": "Usa férula oclusal",
+      "tratamento_anterior": "Tratamiento anterior",
+      "dor_atm": "Dolor ATM",
+      "estalidos": "Chasquidos articulares",
+      "zumbido": "Acúfenos",
+      "diabetes": "Diabetes",
+      "hipertensao": "Hipertensión",
+      "historico_medico": "Historial médico",
+      "medicamentos": "Medicamentos en uso",
+      "alergia": "Alergia",
+      "alergia_qual": "Detalle de la alergia",
+      "anticoncepcional": "Anticonceptivo",
+      "anticoncepcional_qual": "Detalle del anticonceptivo",
+      "gravidez": "Embarazo",
+      "gravidez_meses": "Meses de embarazo",
+      "fumante": "Fumador",
+      "fumante_frequencia": "Frecuencia",
+      "queixa_principal": "Motivo de consulta",
+      "queixa_detalhes": "Detalles del motivo",
+      "queixa_inicio": "Inicio de la queja",
+      "queixa_evolucao": "Evolución",
+      "peso": "Peso",
+      "altura": "Altura",
+      "imc": "IMC",
+      "classificacao": "Clasificación"
+    }
+  },
+
+  "dentists": {
+    "title": "Dentistas"
+  },
+
+  "nav": {
+    "dashboard": "Panel",
+    "patients": "Pacientes",
+    "dentists": "Dentistas",
+    "logs": "Registros",
+    "appTitle": "DP4",
+    "appSubtitle": "Historia Clínica Digital"
+  },
+
+  "form": {
+    "lockedFieldHint": "Este campo no puede ser modificado en el control",
+    "continueButton": "Continuar →",
+    "sectionOf": "Sección {current} de {total}",
+    "bmi": {
+      "weightLabel": "Peso (kg)",
+      "weightPlaceholder": "Ej: 72",
+      "heightLabel": "Altura (cm o m)",
+      "heightPlaceholder": "Ej: 175 o 1.75",
+      "resultLabel": "Su IMC",
+      "unit": "kg/m²",
+      "classifications": {
+        "underweight": "Bajo peso",
+        "normal": "Peso normal",
+        "overweight": "Sobrepeso",
+        "obesityI": "Obesidad Grado I",
+        "obesityII": "Obesidad Grado II",
+        "obesityIII": "Obesidad Grado III"
+      },
+      "barLabels": {
+        "underweight": "Bajo",
+        "normal": "Normal",
+        "overweight": "Sobre",
+        "obesityI": "Ob I",
+        "obesityIIPlus": "Ob II+"
+      }
+    },
+    "completion": {
+      "title": "¡Gracias!",
+      "message": "Su historia clínica ha sido completada exitosamente. El dentista ya tiene acceso a sus respuestas.",
+      "closeHint": "Puede cerrar esta página con seguridad."
+    },
+    "blocked": {
+      "title": "Historia clínica ya completada",
+      "message": "Puede cerrar esta página. El formulario de control estará disponible cuando se cumplan 90 días."
+    }
+  },
+
+  "cpfOverlay": {
+    "incomplete": {
+      "title": "Formulario en curso",
+      "description": "Encontramos un formulario que usted comenzó a completar. ¿Desea continuar donde lo dejó?",
+      "resumeButton": "Continuar donde lo dejé",
+      "restartButton": "Comenzar de nuevo"
+    },
+    "blocked": {
+      "title": "Historia clínica ya completada",
+      "descriptionTemplate": "Su historia clínica fue completada el {{date}}. Para completarla nuevamente o realizar el control, comuníquese con su dentista.",
+      "closeButton": "Entendido"
+    },
+    "controlEligible": {
+      "title": "Control disponible",
+      "description": "Su última historia clínica tiene más de 90 días. ¿Desea completar el formulario de control?",
+      "fillButton": "Completar control",
+      "laterButton": "Ahora no"
+    }
+  },
+
+  "scores": {
+    "lipp": {
+      "noStress": "Sin estrés",
+      "low": "Estrés bajo",
+      "high": "Estrés alto",
+      "severe": "Estrés severo"
+    },
+    "bruxismo": {
+      "absent": "Ausencia de Bruxismo",
+      "mild": "Bruxismo Leve",
+      "moderate": "Bruxismo Moderado",
+      "advanced": "Bruxismo Avanzado"
+    },
+    "epworth": {
+      "normal": "Somnolencia normal",
+      "moderate": "Somnolencia moderada",
+      "abnormal": "Somnolencia anormal"
+    },
+    "severity": {
+      "normal": "Resultado dentro del rango normal.",
+      "low": "Nivel bajo detectado. Sin preocupaciones mayores.",
+      "moderate": "Nivel moderado. Se recomienda seguimiento.",
+      "high": "Nivel elevado. Se recomienda evaluación profesional.",
+      "severe": "Nivel severo. Evaluación profesional necesaria."
+    }
+  },
+
+  "sections": {
+    "1": {
+      "title": "Datos Personales y Salud",
+      "description": "Información personal, salud oral e historial médico"
+    },
+    "2": {
+      "title": "Neuroplasticidad",
+      "description": "Motivo de consulta, hábitos, mapa de dolor y evaluación clínica"
+    },
+    "3": {
+      "title": "Estrés Lipp",
+      "description": "Evaluación del nivel de estrés"
+    },
+    "4": {
+      "title": "Grado de Bruxismo",
+      "description": "Evaluación simplificada del bruxismo"
+    },
+    "5": {
+      "title": "Test de Epworth",
+      "description": "Evaluación de la somnolencia diurna"
+    }
+  },
+
+  "kidsSections": {
+    "1": {
+      "title": "Datos del Niño",
+      "description": "Información del responsable y del niño"
+    },
+    "2": {
+      "title": "Cuestionario del Sueño",
+      "description": "Evaluación del riesgo de apnea obstructiva del sueño"
+    },
+    "3": {
+      "title": "SCARED — Ansiedad",
+      "description": "Evaluación de trastornos de ansiedad infantil"
+    },
+    "4": {
+      "title": "Ritmo Sueño-Vigilia",
+      "description": "Evaluación del patrón de sueño pediátrico"
+    },
+    "5": {
+      "title": "Diario de Sueño",
+      "description": "Registro de una noche de sueño del niño"
+    }
+  },
+
+  "subsections": {
+    "dadosPessoais": "Datos Personales",
+    "saudeOral": "Salud Oral",
+    "saudeMedica": "Salud Médica",
+    "prontuario": "Historia Clínica",
+    "queixaPrincipal": "Motivo de Consulta",
+    "habitos": "Hábitos",
+    "mapaDeDor": "Mapa de Dolor",
+    "doresOrofaciais": "Dolores Orofaciales",
+    "disturbioDoSono": "Trastornos del Sueño",
+    "transtornosCronicos": "Trastornos Crónicos",
+    "medidasFisicas": "Medidas Físicas",
+    "dadosDoResponsavel": "Datos del Responsable",
+    "dadosDaCrianca": "Datos del Niño",
+    "questionarioDoSono": "Cuestionario del Sueño",
+    "scaredAnsiedade": "SCARED — Ansiedad",
+    "ritmoSonoVigilia": "Ritmo Sueño-Vigilia",
+    "diarioDeSono": "Diario de Sueño",
+    "comportamentosDuranteOSono": "Comportamientos durante el sueño"
+  },
+
+  "questions": {
+    "nome": {
+      "label": "¿Cuál es su nombre completo?",
+      "placeholder": "Ingrese su nombre completo"
+    },
+    "cpf": {
+      "label": "¿Cuál es su CPF (identificación fiscal)?",
+      "description": "Usamos su CPF para guardar su progreso. Si necesita detenerse, puede continuar donde lo dejó.",
+      "placeholder": "000.000.000-00"
+    },
+    "data_nascimento": {
+      "label": "¿Cuál es su fecha de nacimiento?"
+    },
+    "endereco": {
+      "label": "¿Cuál es su dirección?",
+      "placeholder": "Calle, número, barrio, ciudad"
+    },
+    "celular": {
+      "label": "¿Cuál es su número de teléfono móvil?",
+      "placeholder": "(00) 00000-0000"
+    },
+    "email": {
+      "label": "¿Cuál es su correo electrónico?",
+      "placeholder": "su@correo.com"
+    },
+    "contato_emergencia": {
+      "label": "En caso de emergencia, ¿a quién debemos avisar?",
+      "placeholder": "Nombre y parentesco"
+    },
+    "como_chegou": {
+      "label": "¿Cómo nos encontró?",
+      "options": {
+        "indicacao": "Recomendación",
+        "instagram": "Instagram",
+        "google": "Google",
+        "facebook": "Facebook",
+        "outro": "Otro"
+      }
+    },
+    "tempo_escovacao": {
+      "label": "¿Cuánto tiempo dedica al cepillado de dientes?",
+      "placeholder": "Ej: 2 minutos"
+    },
+    "mudar_sorriso": {
+      "label": "¿Qué le gustaría cambiar de su sonrisa?",
+      "placeholder": "Describa o escriba \"no aplica\""
+    },
+    "expectativa_tratamento": {
+      "label": "¿Cuál es su expectativa para el tratamiento?",
+      "placeholder": "¿Qué espera lograr?"
+    },
+    "sensibilidade_frio": {
+      "label": "¿Sus dientes son sensibles al frío?"
+    },
+    "fio_dental": {
+      "label": "¿Utiliza hilo dental todos los días?"
+    },
+    "dor_doce_gelado": {
+      "label": "¿Siente algún tipo de dolor al consumir dulces o alimentos fríos?"
+    },
+    "aperta_dentes_stress": {
+      "label": "¿Aprieta los dientes cuando está sometido a estrés?"
+    },
+    "range_dentes_noite": {
+      "label": "¿Rechina los dientes durante la noche?"
+    },
+    "dor_cabeca_refeicoes": {
+      "label": "¿Siente dolor de cabeza después de las comidas?"
+    },
+    "extracao_implante": {
+      "label": "¿Ha sido sometido a una extracción o implante dental?"
+    },
+    "gosto_ruim_halito": {
+      "label": "¿Siente mal sabor o aliento desagradable?"
+    },
+    "bochecho_diario": {
+      "label": "¿Utiliza algún enjuague bucal diario?"
+    },
+    "tratamento_periodontal": {
+      "label": "¿Ha realizado algún tratamiento periodontal?"
+    },
+    "tratamento_ortodontico": {
+      "label": "¿Ha realizado tratamiento de ortodoncia?"
+    },
+    "feliz_estetica": {
+      "label": "¿Está satisfecho con su estética dental?"
+    },
+    "experiencia_ruim": {
+      "label": "¿Tuvo alguna experiencia negativa en su último tratamiento odontológico?"
+    },
+    "medicamento_diario": {
+      "label": "¿Toma algún medicamento diario?"
+    },
+    "medicamento_diario_qual": {
+      "label": "¿Qué medicamento?",
+      "placeholder": "Nombre del medicamento"
+    },
+    "acorda_noite": {
+      "label": "¿Se despierta muchas veces durante la noche?"
+    },
+    "acorda_noite_quantas": {
+      "label": "¿Cuántas veces se despierta durante la noche?",
+      "placeholder": "Ej: 2 a 3 veces"
+    },
+    "banheiro_noite": {
+      "label": "¿Va muchas veces al baño durante la noche?"
+    },
+    "banheiro_noite_quantas": {
+      "label": "¿Cuántas veces va al baño durante la noche?",
+      "placeholder": "Ej: 2 a 3 veces"
+    },
+    "tratamento_medico": {
+      "label": "¿Está en algún tratamiento médico?"
+    },
+    "historico_medico": {
+      "label": "Marque los ítems que aplican a su historial médico:",
+      "description": "Seleccione todos los que correspondan",
+      "options": {
+        "febre_reumatica": "Fiebre reumática",
+        "doencas_articulares": "Enfermedades articulares",
+        "problemas_coracao": "Problemas cardíacos (soplo, prolapso...)",
+        "hipertensao": "Hipertensión",
+        "diabetes": "Diabetes",
+        "endocardite": "Endocarditis bacteriana",
+        "problemas_digestivo": "Problemas del tracto digestivo",
+        "dores_cabeca": "Dolores de cabeza frecuentes",
+        "bronquite_asma": "Bronquitis, asma o sinusitis",
+        "pes_tornozelos": "Pies o tobillos hinchados",
+        "hepatite": "Hepatitis, ictericia",
+        "dst": "Alguna ITS",
+        "catapora": "Varicela",
+        "caxumba": "Paperas",
+        "hospitalizado": "Ha sido hospitalizado",
+        "cirurgia": "Ha sido sometido a alguna cirugía"
+      }
+    },
+    "comentarios": {
+      "label": "Comentarios personales",
+      "description": "¿Algo más que le gustaría compartir sobre su salud?",
+      "placeholder": "Escriba aquí o deje en blanco"
+    },
+    "alergia_medicamento": {
+      "label": "¿Tiene alergia a algún medicamento?"
+    },
+    "alergia_qual": {
+      "label": "¿Qué medicamento?",
+      "placeholder": "Nombre del medicamento"
+    },
+    "gravida_amamentando": {
+      "label": "¿Está embarazada o amamantando?"
+    },
+    "reposicao_hormonal": {
+      "label": "¿Realiza reemplazo hormonal?"
+    },
+    "menopausa": {
+      "label": "¿Ya pasó por la menopausia?"
+    },
+    "anticoncepcional": {
+      "label": "¿Utiliza algún anticonceptivo?"
+    },
+    "anticoncepcional_qual": {
+      "label": "¿Qué anticonceptivo?",
+      "placeholder": "Ej: Mirena, píldora..."
+    },
+    "queixa_principal": {
+      "label": "¿Cuál es su motivo de consulta principal?",
+      "description": "Describa lo que más le molesta",
+      "placeholder": "Describa aquí..."
+    },
+    "neuro_comentarios": {
+      "label": "Comentarios personales",
+      "placeholder": "¿Algo más que quiera compartir?"
+    },
+    "data_inicio_problema": {
+      "label": "Fecha probable del inicio del problema",
+      "placeholder": "Ej: Hace 2 años, desde 2020..."
+    },
+    "tratamentos_anteriores": {
+      "label": "Tratamientos anteriores",
+      "placeholder": "Tratamientos que ya realizó para este problema"
+    },
+    "evacua_diariamente": {
+      "label": "¿Evacúa todos los días?"
+    },
+    "desconforto_abdominal": {
+      "label": "¿Tiene malestar abdominal o gases con frecuencia?"
+    },
+    "horario_dormir": {
+      "label": "¿A qué hora suele dormir?",
+      "placeholder": "Ej: 23:00"
+    },
+    "horario_acordar": {
+      "label": "¿A qué hora suele despertar?",
+      "placeholder": "Ej: 07:00"
+    },
+    "atividade_fisica": {
+      "label": "¿Practica actividad física?",
+      "options": {
+        "nao_pratico": "No practico",
+        "raramente": "Raramente",
+        "frequentemente": "Frecuentemente"
+      }
+    },
+    "freq_atividade": {
+      "label": "¿Cuántos días por semana practica?",
+      "placeholder": "0-7"
+    },
+    "periodo_atividade": {
+      "label": "¿En qué parte del día practica?",
+      "options": {
+        "manha": "Mañana",
+        "tarde": "Tarde",
+        "noite": "Noche"
+      }
+    },
+    "pain_map": {
+      "label": "Escala numérica del dolor: marque de 0 a 10",
+      "description": "Toque en cada región para indicar la intensidad del dolor"
+    },
+    "freq_dor": {
+      "label": "Frecuencia promedio del dolor",
+      "options": {
+        "0": "Raramente",
+        "1": "Mensual",
+        "2": "Semanal",
+        "3": "Diariamente"
+      }
+    },
+    "tipo_dor": {
+      "label": "Tipo de dolor",
+      "options": {
+        "pulsatil": "Pulsátil o palpitante",
+        "continua": "Continuo",
+        "choque": "Descarga eléctrica",
+        "queimacao": "Ardor",
+        "outras": "Otros"
+      }
+    },
+    "comentarios_dor": {
+      "label": "Comentarios sobre sus dolores",
+      "placeholder": "Describa cuándo y cómo siente los dolores..."
+    },
+    "orofacial_1": {
+      "label": "¿Tiene dificultad y/o dolor para abrir la boca o masticar alimentos duros?"
+    },
+    "orofacial_2": {
+      "label": "¿Tiene ruidos en la articulación (cerca del oído) al abrir la boca o masticar?"
+    },
+    "orofacial_3": {
+      "label": "¿Tiene historial de dolores dentales (restauraciones/tratamientos de conducto)?"
+    },
+    "orofacial_4": {
+      "label": "¿Tiene historial de sinusitis?"
+    },
+    "comentarios_orofacial": {
+      "label": "Comentarios personales sobre dolores orofaciales",
+      "placeholder": "Detalles adicionales..."
+    },
+    "sono_1": {
+      "label": "¿Se despierta cansado, con malestar y/o dolor en los músculos de la cara o cefaleas matutinas?"
+    },
+    "sono_2": {
+      "label": "¿Tiene alguno de estos problemas durante el sueño: trastorno respiratorio, sueño inquieto, despertar frecuente, crisis de asfixia, movimientos periódicos de las piernas, despertar nocturno con sudoración o boca seca?"
+    },
+    "sono_3": {
+      "label": "¿Usa medicamentos para dormir (tranquilizantes, calmantes, etc.)?"
+    },
+    "sono_4": {
+      "label": "¿Ronca?"
+    },
+    "sono_5": {
+      "label": "¿Siente deterioro de la memoria, falta de concentración, fatiga física o mental, o somnolencia durante el día?"
+    },
+    "sono_6": {
+      "label": "¿Sabe si tiene sueño agitado, si rechina o aprieta los dientes?"
+    },
+    "comentarios_sono": {
+      "label": "Comentarios personales sobre su sueño",
+      "placeholder": "Detalles adicionales..."
+    },
+    "cronico_1": {
+      "label": "¿Dolor crónico (migraña, dolores en la cara, dolores de espalda, dolores viscerales, fibromialgia u otros)?"
+    },
+    "cronico_2": {
+      "label": "¿Tiene historia de trastornos neurológicos (déficit de atención, síndrome de pánico, anorexia, bulimia, dislexia, TOC, etc.)?"
+    },
+    "cronico_3": {
+      "label": "¿Hace uso crónico de medicamentos para alivio del dolor o por otros motivos?"
+    },
+    "cronico_4": {
+      "label": "¿Siente o tiene alteraciones emocionales (crisis de llanto), falta de autoconfianza, sensación de fracaso, pérdida de libido, pérdida de apetito o compulsión por la comida, falta de motivación para divertirse?"
+    },
+    "cronico_5": {
+      "label": "¿Incluye en su alimentación gluten y/o lactosa (pan, leche, etc.)?"
+    },
+    "cronico_6": {
+      "label": "¿Tiene el hábito de consumir café, bebida alcohólica, tabaco, drogas, chocolate?"
+    },
+    "grau_ansiedade": {
+      "label": "¿Cuál es su grado de tensión y/o ansiedad?",
+      "description": "De 0 (ninguna) a 10 (extrema)"
+    },
+    "comentarios_cronicos": {
+      "label": "Comentarios personales",
+      "placeholder": "Detalles adicionales..."
+    },
+    "medidas_fisicas": {
+      "label": "Sus medidas físicas",
+      "description": "El IMC será calculado automáticamente"
+    },
+    "pressao_arterial": {
+      "label": "Presión Arterial",
+      "placeholder": "Ej: 12/8"
+    },
+    "lipp_1": {
+      "label": "Tensión muscular (ej.: apretar la mandíbula, dolor en la nuca)."
+    },
+    "lipp_2": {
+      "label": "Pensar en un solo asunto o repetir el mismo tema."
+    },
+    "lipp_3": {
+      "label": "Olvido de cosas cotidianas (ej.: dónde puso las llaves)."
+    },
+    "lipp_4": {
+      "label": "Ansiedad."
+    },
+    "lipp_5": {
+      "label": "Hiperacidez estomacal (ardor) sin causa aparente."
+    },
+    "lipp_6": {
+      "label": "Trastorno del sueño o dormir de más/menos."
+    },
+    "lipp_7": {
+      "label": "Irritabilidad excesiva."
+    },
+    "lipp_8": {
+      "label": "Cansancio al despertar."
+    },
+    "lipp_9": {
+      "label": "Tener ganas de \"desaparecer\"."
+    },
+    "lipp_10": {
+      "label": "Trabajar con un nivel de competencia por debajo de lo normal."
+    },
+    "lipp_11": {
+      "label": "Sensación de incompetencia, de que no va a poder lidiar con lo que está ocurriendo."
+    },
+    "lipp_12": {
+      "label": "Tener la sensación de que nada vale la pena."
+    },
+    "brux_1": {
+      "label": "¿Se queja o siente dolor de cabeza, en la cara, en el cuello o en los hombros?"
+    },
+    "brux_2": {
+      "label": "¿Se siente cansado o con algún tipo de malestar en la cara al despertar?"
+    },
+    "brux_3": {
+      "label": "¿Tiene dificultad para dormir? (Sueño agitado y/o ligero)"
+    },
+    "brux_4": {
+      "label": "¿Usa algún medicamento para dormir?"
+    },
+    "brux_5": {
+      "label": "¿Tiene el hábito de apretar o rechinar los dientes?"
+    },
+    "brux_6": {
+      "label": "¿Tiene el hábito de consumir café, tabaco o algún otro estimulante?"
+    },
+    "brux_7": {
+      "label": "¿Tiene el hábito de consumir derivados de gluten y/o lactosa (ej.: pan, leche, etc.)?"
+    },
+    "brux_8": {
+      "label": "¿Pasa mucho tiempo viendo televisión y/o usando el teléfono, computadora o tableta?"
+    },
+    "brux_9": {
+      "label": "¿Es hipertenso, tiene sobrepeso o usa medicamentos para adelgazar?"
+    },
+    "brux_10": {
+      "label": "¿Se considera una persona tensa, nerviosa o ansiosa?"
+    },
+    "epworth_1": {
+      "label": "Sentado y leyendo",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_2": {
+      "label": "Sentado, inactivo en un lugar público (ej.: sala de espera)",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_3": {
+      "label": "Acostándose para descansar por la tarde cuando las circunstancias lo permiten",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_4": {
+      "label": "Sentado tranquilamente después del almuerzo sin consumo de alcohol",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_5": {
+      "label": "Viendo televisión",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_6": {
+      "label": "Como pasajero en un auto, tren o autobús, viajando 1 hora sin parar",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_7": {
+      "label": "Sentado y conversando con alguien",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "epworth_8": {
+      "label": "Conduciendo un auto que está detenido por algunos minutos en tráfico intenso",
+      "description": "¿Con qué frecuencia se queda dormido en esta situación?"
+    },
+    "kids_nome_responsavel": {
+      "label": "¿Cuál es su nombre? (padre, madre o responsable)",
+      "placeholder": "Nombre completo del responsable"
+    },
+    "kids_cpf_responsavel": {
+      "label": "¿Cuál es su CPF (identificación fiscal)?",
+      "description": "Usamos su CPF para guardar el progreso. Si necesita detenerse, puede continuar donde lo dejó.",
+      "placeholder": "000.000.000-00"
+    },
+    "kids_nome_crianca": {
+      "label": "¿Cuál es el nombre del niño/a?",
+      "placeholder": "Nombre completo del niño/a"
+    },
+    "kids_data_nascimento": {
+      "label": "¿Cuál es la fecha de nacimiento del niño/a?"
+    },
+    "kids_parentesco": {
+      "label": "¿Cuál es su parentesco con el niño/a?",
+      "options": {
+        "mae": "Madre",
+        "pai": "Padre",
+        "avo": "Abuelo/a",
+        "outro": "Otro responsable"
+      }
+    },
+    "kids_sono_1": { "label": "¿Ronca más de la mitad del tiempo de sueño?" },
+    "kids_sono_2": { "label": "¿Siempre ronca?" },
+    "kids_sono_3": { "label": "¿Ronca fuerte?" },
+    "kids_sono_4": { "label": "¿Tiene dificultad para respirar o lucha para respirar?" },
+    "kids_sono_5": { "label": "¿Tiene respiración ruidosa o \"pesada\"?" },
+    "kids_sono_6": { "label": "¿Ha visto a su hijo/a dejar de respirar durante la noche?" },
+    "kids_sono_7": { "label": "¿Tiende a respirar por la boca durante el día?" },
+    "kids_sono_8": { "label": "¿Tiene la boca seca al despertar por la mañana?" },
+    "kids_sono_9": { "label": "¿Ocasionalmente moja la cama?" },
+    "kids_sono_10": { "label": "¿Se despierta sintiéndose cansado/a por la mañana?" },
+    "kids_sono_11": { "label": "¿Tiene problema de somnolencia durante el día?" },
+    "kids_sono_12": { "label": "¿Algún profesor comentó que su hijo/a se queda somnoliento durante el día?" },
+    "kids_sono_13": { "label": "¿Es difícil despertarlo/a por la mañana?" },
+    "kids_sono_14": { "label": "¿Se despierta con dolor de cabeza por la mañana?" },
+    "kids_sono_15": { "label": "¿Dejó de crecer a un ritmo normal en algún momento desde el nacimiento?" },
+    "kids_sono_16": { "label": "¿Tiene sobrepeso?" },
+    "kids_sono_17": { "label": "¿Parece no escuchar cuando le hablan?" },
+    "kids_sono_18": { "label": "¿Tiene dificultad para organizar tareas y actividades?" },
+    "kids_sono_19": { "label": "¿Se distrae fácilmente por estímulos externos?" },
+    "kids_sono_20": { "label": "¿Tiene las manos y los pies inquietos o se retuerce al sentarse?" },
+    "kids_sono_21": { "label": "¿Actúa como si estuviera \"conectado/a a un motor\"?" },
+    "kids_sono_22": { "label": "¿Se entromete o interrumpe a los demás?" },
+    "kids_scared_1": { "label": "Cuando tengo miedo, me cuesta respirar" },
+    "kids_scared_2": { "label": "Me duele la cabeza cuando estoy en la escuela" },
+    "kids_scared_3": { "label": "No me gusta estar con personas que no conozco bien" },
+    "kids_scared_4": { "label": "Me da miedo dormir fuera de casa" },
+    "kids_scared_5": { "label": "Me preocupa si las personas van a gustar de mí" },
+    "kids_scared_6": { "label": "Cuando tengo miedo, siento que me voy a desmayar" },
+    "kids_scared_7": { "label": "Soy nervioso/a" },
+    "kids_scared_8": { "label": "Sigo a mi mamá o a mi papá a todos lados" },
+    "kids_scared_9": { "label": "La gente me dice que parezco nervioso/a" },
+    "kids_scared_10": { "label": "Me pongo nervioso/a con personas que no conozco bien" },
+    "kids_scared_11": { "label": "Me duele la barriga en la escuela" },
+    "kids_scared_12": { "label": "Cuando tengo miedo, siento que me voy a volver loco/a" },
+    "kids_scared_13": { "label": "Me preocupa dormir solo/a" },
+    "kids_scared_14": { "label": "Me preocupa ser tan bueno/a como los otros niños" },
+    "kids_scared_15": { "label": "Cuando tengo miedo, siento como si las cosas no fueran reales" },
+    "kids_scared_16": { "label": "Tengo pesadillas de que algo malo le pasa a mis padres" },
+    "kids_scared_17": { "label": "Me preocupa ir a la escuela" },
+    "kids_scared_18": { "label": "Cuando tengo miedo, mi corazón late rápido" },
+    "kids_scared_19": { "label": "Tiemblo" },
+    "kids_scared_20": { "label": "Tengo pesadillas de que algo malo me va a pasar" },
+    "kids_scared_21": { "label": "Me preocupa si las cosas van a salir bien para mí" },
+    "kids_scared_22": { "label": "Cuando tengo miedo, sudo mucho" },
+    "kids_scared_23": { "label": "Soy una persona que se preocupa mucho" },
+    "kids_scared_24": { "label": "Me asusto mucho sin razón" },
+    "kids_scared_25": { "label": "Tengo miedo de quedarme solo/a en casa" },
+    "kids_scared_26": { "label": "Me resulta difícil hablar con personas que no conozco bien" },
+    "kids_scared_27": { "label": "Cuando tengo miedo, siento como si me estuviera ahogando" },
+    "kids_scared_28": { "label": "La gente me dice que me preocupo demasiado" },
+    "kids_scared_29": { "label": "No me gusta estar lejos de mi familia" },
+    "kids_scared_30": { "label": "Tengo miedo de tener ataques de ansiedad (o pánico)" },
+    "kids_scared_31": { "label": "Me preocupa que algo malo le pase a mis padres" },
+    "kids_scared_32": { "label": "Me pongo tímido/a con personas que no conozco bien" },
+    "kids_scared_33": { "label": "Me preocupa lo que va a pasar en el futuro" },
+    "kids_scared_34": { "label": "Cuando tengo miedo, siento ganas de vomitar" },
+    "kids_scared_35": { "label": "Me preocupa cómo hago las cosas" },
+    "kids_scared_36": { "label": "Tengo miedo de ir a la escuela" },
+    "kids_scared_37": { "label": "Me preocupo por cosas que ya pasaron" },
+    "kids_scared_38": { "label": "Cuando tengo miedo, me mareo" },
+    "kids_scared_39": { "label": "Me pongo nervioso/a cuando estoy con otros niños o adultos y tengo que hacer algo mientras me observan" },
+    "kids_scared_40": { "label": "Me pongo nervioso/a cuando voy a fiestas, bailes o cualquier lugar donde hay personas que no conozco bien" },
+    "kids_scared_41": { "label": "Soy tímido/a" },
+    "kids_ritmo_horas_sono": {
+      "label": "¿Cuántas horas por noche duerme generalmente el niño/a?",
+      "options": {
+        "5-6": "5 a 6 horas",
+        "7-8": "7 a 8 horas",
+        "9-10": "9 a 10 horas",
+        "11+": "11 horas o más"
+      }
+    },
+    "kids_ritmo_tempo_adormecer": {
+      "label": "¿Cuánto tiempo tarda el niño/a en dormirse?",
+      "options": {
+        "menos15": "Menos de 15 minutos",
+        "15-30": "15 a 30 minutos",
+        "30-60": "30 a 60 minutos",
+        "mais60": "Más de 60 minutos"
+      }
+    },
+    "kids_ritmo_1": { "label": "El niño/a se duerme a la hora indicada" },
+    "kids_ritmo_2": { "label": "El niño/a tiene dificultad para dormirse" },
+    "kids_ritmo_3": { "label": "El niño/a está inquieto y se mueve mucho durante el sueño" },
+    "kids_ritmo_4": { "label": "El niño/a se despierta durante la noche" },
+    "kids_ritmo_5": { "label": "Cuando se despierta por la noche, tiene dificultad para volver a dormirse" },
+    "kids_ritmo_6": { "label": "El niño/a tiene pesadillas" },
+    "kids_ritmo_7": { "label": "El niño/a grita durante el sueño" },
+    "kids_ritmo_8": { "label": "El niño/a habla durante el sueño" },
+    "kids_ritmo_9": { "label": "El niño/a rechina los dientes durante el sueño" },
+    "kids_ritmo_10": { "label": "El niño/a ronca durante el sueño" },
+    "kids_ritmo_11": { "label": "El niño/a suda excesivamente durante el sueño" },
+    "kids_ritmo_12": { "label": "El niño/a camina durante el sueño (sonambulismo)" },
+    "kids_ritmo_13": { "label": "El niño/a va a la cama de los padres durante la noche" },
+    "kids_ritmo_14": { "label": "El niño/a se resiste a ir a la cama" },
+    "kids_ritmo_15": { "label": "El niño/a tiene miedo de dormir a oscuras" },
+    "kids_ritmo_16": { "label": "El niño/a tiene miedo de dormir solo/a" },
+    "kids_ritmo_17": { "label": "El niño/a se despierta con dificultad por la mañana" },
+    "kids_ritmo_18": { "label": "El niño/a se despierta de mal humor" },
+    "kids_ritmo_19": { "label": "El niño/a es despertado por los adultos" },
+    "kids_ritmo_20": { "label": "El niño/a tiene dificultad para levantarse de la cama" },
+    "kids_ritmo_21": { "label": "El niño/a tiene somnolencia excesiva durante el día" },
+    "kids_ritmo_22": { "label": "El niño/a toma siestas durante el día" },
+    "kids_ritmo_23": { "label": "El niño/a se queda somnoliento/a viendo televisión" },
+    "kids_ritmo_24": { "label": "El niño/a se queda somnoliento/a viajando en auto" },
+    "kids_diario_data": {
+      "label": "¿Cuál es la fecha de esta noche de sueño?"
+    },
+    "kids_diario_ultima_refeicao": {
+      "label": "¿A qué hora fue la última comida antes de dormir?",
+      "placeholder": "Ej: 19:30"
+    },
+    "kids_diario_hora_dormir": {
+      "label": "¿A qué hora se durmió el niño/a?",
+      "placeholder": "Ej: 21:00"
+    },
+    "kids_diario_hora_acordar": {
+      "label": "¿A qué hora se despertó el niño/a?",
+      "placeholder": "Ej: 06:30"
+    },
+    "kids_diario_despertares": {
+      "label": "¿Cuántas veces se despertó el niño/a durante la noche?",
+      "placeholder": "0"
+    },
+    "kids_diario_comportamentos": {
+      "label": "¿Qué comportamientos se observaron durante el sueño?",
+      "options": {
+        "ranger_dentes": "Rechinar de dientes",
+        "ronco": "Ronquido",
+        "engasgo": "Atragantamiento",
+        "para_respirar": "Dejó de respirar",
+        "banheiro_xixi": "Ida al baño / mojar la cama",
+        "baba_travesseiro": "Baba en la almohada",
+        "asma_bronquite": "Crisis de asma / bronquitis",
+        "rinite_espirros": "Rinitis o estornudos / nariz tapada",
+        "cama_pais": "Se despertó para ir a la cama de los padres"
+      }
+    },
+    "kids_diario_observacoes": {
+      "label": "Observaciones adicionales sobre esta noche",
+      "placeholder": "Algo que haya notado..."
+    }
+  },
+
+  "options": {
+    "frequency": {
+      "nunca": "Nunca",
+      "deVezEmQuando": "De vez en cuando",
+      "comMuitaFrequencia": "Con mucha frecuencia"
+    },
+    "lippScale": {
+      "no": "NO",
+      "yes": "SÍ"
+    },
+    "bruxScale": {
+      "no": "NO",
+      "sometimes": "A VECES",
+      "yes": "SÍ"
+    },
+    "epworthScale": {
+      "never": "NUNCA",
+      "sometimes": "A VECES",
+      "frequently": "FRECUENTEMENTE",
+      "always": "SIEMPRE"
+    },
+    "scaredScale": {
+      "notTrue": "No es verdad",
+      "sometimes": "A veces",
+      "true": "Verdadero"
+    },
+    "ritmoFrequency": {
+      "never": "Nunca",
+      "occasionally": "Ocasionalmente",
+      "sometimes": "Algunas veces",
+      "almostAlways": "Casi siempre",
+      "always": "Siempre"
+    }
+  },
+
+  "metadata": {
+    "title": "DP4 — Historia Clínica Digital de Bruxismo",
+    "description": "Historia clínica digital para evaluación de bruxismo, estrés y sueño"
+  }
+}

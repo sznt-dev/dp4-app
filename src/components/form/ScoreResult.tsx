@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import type { ScoreResult as ScoreResultType } from '@/types';
 
@@ -8,9 +9,11 @@ interface ScoreResultProps {
   title: string;
   result: ScoreResultType;
   icon?: React.ReactNode;
+  scoreType?: 'lipp' | 'bruxismo' | 'epworth';
 }
 
-export default function ScoreResult({ title, result, icon }: ScoreResultProps) {
+export default function ScoreResult({ title, result, icon, scoreType }: ScoreResultProps) {
+  const t = useTranslations('scores');
   const containerRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
@@ -143,11 +146,7 @@ export default function ScoreResult({ title, result, icon }: ScoreResultProps) {
       {/* Description */}
       <div ref={classificationRef} className="opacity-0">
         <p className="text-sm text-muted-foreground/80 leading-relaxed">
-          {result.severity === 'normal' && 'Resultado dentro da faixa normal.'}
-          {result.severity === 'low' && 'Nível baixo detectado. Sem preocupações maiores.'}
-          {result.severity === 'moderate' && 'Nível moderado. Acompanhamento recomendado.'}
-          {result.severity === 'high' && 'Nível elevado. Avaliação profissional recomendada.'}
-          {result.severity === 'severe' && 'Nível severo. Avaliação profissional necessária.'}
+          {result.severity && t(`severity.${result.severity}`)}
         </p>
       </div>
     </div>

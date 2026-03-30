@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import FormEngine, { type FormEngineHandle } from '@/components/form/FormEngine';
 import CPFLookupOverlay from '@/components/form/CPFLookupOverlay';
 import type { CPFLookupResponse, CPFLookupStatus } from '@/types';
@@ -30,6 +31,8 @@ export default function FormFlow({
   lockedPatient,
   parentSubmissionId,
 }: FormFlowProps) {
+  const t = useTranslations('form');
+
   // For control forms, pre-fill name and CPF from locked patient
   const initialAnswers = lockedPatient
     ? { nome: lockedPatient.name, cpf: lockedPatient.cpf, ...propInitialAnswers }
@@ -290,9 +293,9 @@ export default function FormFlow({
               <polyline points="12,6 12,12 16,14" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Prontuário já preenchido</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('blocked.title')}</h1>
           <p className="text-muted-foreground/90 leading-relaxed">
-            Você pode fechar esta página. O formulário de controle estará disponível quando completar 90 dias.
+            {t('blocked.message')}
           </p>
         </div>
       </div>
@@ -311,9 +314,9 @@ export default function FormFlow({
             </svg>
           </div>
           <div className="space-y-3">
-            <h1 className="text-3xl font-bold text-foreground">Obrigado!</h1>
+            <h1 className="text-3xl font-bold text-foreground">{t('completion.title')}</h1>
             <p className="text-muted-foreground/90 leading-relaxed">
-              Seu prontuário foi preenchido com sucesso. O dentista já tem acesso às suas respostas.
+              {t('completion.message')}
             </p>
           </div>
           {scores && (
@@ -340,7 +343,7 @@ export default function FormFlow({
             </div>
           )}
           <p className="text-xs text-muted-foreground/80">
-            Você pode fechar esta página com segurança.
+            {t('completion.closeHint')}
           </p>
         </div>
       </div>

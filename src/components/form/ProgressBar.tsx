@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 interface ProgressBarProps {
   currentSection: number;
@@ -16,6 +18,7 @@ export default function ProgressBar({
   answeredQuestions,
   totalQuestions,
 }: ProgressBarProps) {
+  const t = useTranslations('form');
   const barRef = useRef<HTMLDivElement>(null);
   const percentage = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
   const remaining = totalQuestions - answeredQuestions;
@@ -44,14 +47,17 @@ export default function ProgressBar({
       {/* Info row */}
       <div className="flex items-center justify-between px-4 py-2.5 max-w-lg mx-auto">
         <span className="text-xs text-muted-foreground">
-          Seção {currentSection} de {totalSections}
+          {t('sectionOf', { current: currentSection, total: totalSections })}
         </span>
         <span className="text-xs font-medium text-foreground/70">
           {percentage}%
         </span>
-        <span className="text-xs text-muted-foreground">
-          {remaining > 0 ? `${remaining} restantes` : 'Completo!'}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground">
+            {remaining > 0 ? `${remaining} restantes` : 'Completo!'}
+          </span>
+          <LanguageSwitcher />
+        </div>
       </div>
     </div>
   );

@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { gsap } from '@/lib/animations/gsap-config';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function LoginPage() {
+  const t = useTranslations('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -37,7 +40,7 @@ export default function LoginPage() {
 
       if (authError) {
         if (authError.message.includes('Invalid login credentials')) {
-          setError('E-mail ou senha incorretos');
+          setError(t('errorInvalidCredentials'));
         } else {
           setError(authError.message);
         }
@@ -47,7 +50,7 @@ export default function LoginPage() {
       router.push('/dashboard');
       router.refresh();
     } catch {
-      setError('Erro ao fazer login. Tente novamente.');
+      setError(t('errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -57,14 +60,19 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#07070C] bg-grid relative overflow-hidden flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
 
+      {/* Language switcher — top right */}
+      <div className="absolute top-4 right-4 z-20">
+        <LanguageSwitcher />
+      </div>
+
       <div ref={formRef} className="relative z-10 w-full max-w-sm">
         {/* Logo */}
         <div data-animate className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground">
-            DP4
+            {t('title')}
           </h1>
           <p className="text-sm text-muted-foreground/90 mt-1">
-            Prontuário Digital de Bruxismo
+            {t('subtitle')}
           </p>
         </div>
 
@@ -75,14 +83,14 @@ export default function LoginPage() {
         >
           <div data-animate className="space-y-2">
             <label className="text-sm text-muted-foreground/90" htmlFor="email">
-              E-mail
+              {t('emailLabel')}
             </label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
+              placeholder={t('emailPlaceholder')}
               required
               className="
                 w-full px-4 py-3 rounded-xl
@@ -97,14 +105,14 @@ export default function LoginPage() {
 
           <div data-animate className="space-y-2">
             <label className="text-sm text-muted-foreground/90" htmlFor="password">
-              Senha
+              {t('passwordLabel')}
             </label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder={t('passwordPlaceholder')}
               required
               className="
                 w-full px-4 py-3 rounded-xl
@@ -136,7 +144,7 @@ export default function LoginPage() {
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading ? t('loginLoading') : t('loginButton')}
           </button>
         </form>
       </div>

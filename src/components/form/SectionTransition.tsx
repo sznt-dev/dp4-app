@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import { User, Brain, Heart, Activity, Moon } from 'lucide-react';
 
@@ -29,6 +30,7 @@ export default function SectionTransition({
   icon,
   onComplete,
 }: SectionTransitionProps) {
+  const t = useTranslations();
   const containerRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -105,7 +107,7 @@ export default function SectionTransition({
           ref={numberRef}
           className="text-xs font-medium text-amber-500/50 uppercase tracking-[0.2em] opacity-0"
         >
-          Seção {sectionNumber} de {totalSections}
+          {t('form.sectionOf', { current: sectionNumber, total: totalSections })}
         </span>
 
         {/* Icon */}

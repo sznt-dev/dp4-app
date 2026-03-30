@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Search, ChevronRight } from 'lucide-react';
 
@@ -23,6 +24,7 @@ export default function PatientsPage() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const t = useTranslations('patients');
 
   useEffect(() => {
     loadPatients();
@@ -117,8 +119,8 @@ export default function PatientsPage() {
     <div className="space-y-6 max-w-5xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Pacientes</h1>
-          <p className="text-base text-foreground/60 mt-1">{patients.length} paciente{patients.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
+          <p className="text-base text-foreground/60 mt-1">{patients.length} {patients.length !== 1 ? t('countSuffix') : t('countSuffixSingular')}</p>
         </div>
       </div>
 
@@ -132,7 +134,7 @@ export default function PatientsPage() {
               : 'text-foreground/50 hover:text-foreground hover:bg-white/[0.04]'
           }`}
         >
-          Adultos {adultCount > 0 && <span className="ml-1 text-xs">({adultCount})</span>}
+          {t('tabs.adults')} {adultCount > 0 && <span className="ml-1 text-xs">({adultCount})</span>}
         </button>
         <button
           onClick={() => setActiveTab('kids')}
@@ -142,7 +144,7 @@ export default function PatientsPage() {
               : 'text-foreground/50 hover:text-foreground hover:bg-white/[0.04]'
           }`}
         >
-          Kids {kidsCount > 0 && <span className="ml-1 text-xs">({kidsCount})</span>}
+          {t('tabs.kids')} {kidsCount > 0 && <span className="ml-1 text-xs">({kidsCount})</span>}
         </button>
       </div>
 
@@ -153,7 +155,7 @@ export default function PatientsPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por nome ou CPF..."
+          placeholder={t('searchPlaceholder')}
           className="
             w-full pl-10 pr-4 py-2.5 rounded-xl
             bg-white/[0.03] border border-white/[0.06]
@@ -167,7 +169,7 @@ export default function PatientsPage() {
       {/* Patient list */}
       {filtered.length === 0 ? (
         <p className="text-sm text-muted-foreground/80 py-12 text-center">
-          {search ? 'Nenhum paciente encontrado.' : 'Nenhum paciente cadastrado ainda.'}
+          {search ? t('noResults') : t('noPatients')}
         </p>
       ) : (
         <div className="space-y-2">
@@ -199,13 +201,13 @@ export default function PatientsPage() {
                         : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                     }`}
                   >
-                    {patient.latestStatus === 'completed' ? 'Completo' : 'Em andamento'}
+                    {patient.latestStatus === 'completed' ? t('statusComplete') : t('statusInProgress')}
                   </span>
                 )}
 
                 {patient.bruxismScore !== null && (
                   <span className="text-xs text-muted-foreground/90 hidden md:block">
-                    Brux: {patient.bruxismScore}/20
+                    {t('bruxLabel')}: {patient.bruxismScore}/20
                   </span>
                 )}
 

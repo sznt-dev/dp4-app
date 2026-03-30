@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { gsap } from '@/lib/animations/gsap-config';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 
@@ -23,6 +24,7 @@ export default function NavigationButtons({
   isRequired,
   hasValue,
 }: NavigationButtonsProps) {
+  const t = useTranslations('common');
   const nextRef = useRef<HTMLButtonElement>(null);
 
   const isNextDisabled = isRequired && !hasValue;
@@ -67,7 +69,7 @@ export default function NavigationButtons({
         `}
       >
         <ArrowLeft className="w-4 h-4" />
-        Voltar
+        {t('back')}
       </button>
 
       {/* Next / Complete button */}
@@ -90,12 +92,12 @@ export default function NavigationButtons({
       >
         {isLastQuestion ? (
           <>
-            Finalizar
+            {t('finish')}
             <Check className="w-4 h-4" />
           </>
         ) : (
           <>
-            Próxima
+            {t('next')}
             <ArrowRight className="w-4 h-4" />
           </>
         )}
@@ -115,6 +117,8 @@ export function SkipHint({
   hasValue: boolean;
   onSkip: () => void;
 }) {
+  const t = useTranslations('common');
+
   if (isRequired || hasValue) return null;
 
   return (
@@ -124,7 +128,7 @@ export function SkipHint({
         onClick={onSkip}
         className="text-xs text-muted-foreground/80 hover:text-muted-foreground/90 transition-colors py-1"
       >
-        Pular esta pergunta →
+        {t('skipQuestion')}
       </button>
     </div>
   );

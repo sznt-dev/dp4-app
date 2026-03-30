@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
+import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Copy, Check, Link2, Download, GitCompareArrows, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 
 interface PatientData {
   id: string;
@@ -41,63 +42,65 @@ interface SubmissionData {
   created_at: string;
 }
 
-const SECTION_LABELS: Record<string, string> = {
-  dados_pessoais: 'Dados Pessoais',
-  saude_oral: 'Saúde Oral',
-  saude_medica: 'Saúde Médica',
-  prontuario: 'Prontuário',
-  neuroplasticidade: 'Neuroplasticidade',
-  pain_map: 'Mapa de Dor',
-  orofacial: 'Dores Orofaciais',
-  sleep_disorders: 'Distúrbios do Sono',
-  chronic_disorders: 'Transtornos Crônicos',
-  physical_measurements: 'Medidas Físicas',
-  estresse_lipp: 'Estresse Lipp',
-  grau_bruxismo: 'Grau de Bruxismo',
-  teste_epworth: 'Teste Epworth',
+const SECTION_LABEL_KEYS: Record<string, string> = {
+  dados_pessoais: 'dados_pessoais',
+  saude_oral: 'saude_oral',
+  saude_medica: 'saude_medica',
+  prontuario: 'prontuario',
+  neuroplasticidade: 'neuroplasticidade',
+  pain_map: 'pain_map',
+  orofacial: 'orofacial',
+  sleep_disorders: 'sleep_disorders',
+  chronic_disorders: 'chronic_disorders',
+  physical_measurements: 'physical_measurements',
+  estresse_lipp: 'estresse_lipp',
+  grau_bruxismo: 'grau_bruxismo',
+  teste_epworth: 'teste_epworth',
 };
 
-const FIELD_LABELS: Record<string, string> = {
-  nome: 'Nome', cpf: 'CPF', data_nascimento: 'Data de nascimento',
-  endereco: 'Endereço', celular: 'Celular', email: 'E-mail',
-  contato_emergencia: 'Contato de emergência', como_chegou: 'Como chegou',
-  tempo_escovacao: 'Tempo de escovação', tipo_escova: 'Tipo de escova',
-  usa_fio_dental: 'Usa fio dental', frequencia_fio: 'Frequência do fio',
-  sangramento_gengival: 'Sangramento gengival', sensibilidade: 'Sensibilidade',
-  dor_dente: 'Dor de dente', bruxismo_diurno: 'Bruxismo diurno',
-  bruxismo_noturno: 'Bruxismo noturno', aperta_dentes: 'Aperta os dentes',
-  range_dentes: 'Range os dentes', usa_placa: 'Usa placa',
-  tratamento_anterior: 'Tratamento anterior', dor_atm: 'Dor ATM',
-  estalidos: 'Estalidos', zumbido: 'Zumbido',
-  diabetes: 'Diabetes', hipertensao: 'Hipertensão',
-  historico_medico: 'Histórico médico', medicamentos: 'Medicamentos em uso',
-  alergia: 'Alergia', alergia_qual: 'Qual alergia',
-  anticoncepcional: 'Anticoncepcional', anticoncepcional_qual: 'Qual anticoncepcional',
-  gravidez: 'Gravidez', gravidez_meses: 'Meses de gravidez',
-  fumante: 'Fumante', fumante_frequencia: 'Frequência',
-  queixa_principal: 'Queixa principal', queixa_detalhes: 'Detalhes da queixa',
-  queixa_inicio: 'Início da queixa', queixa_evolucao: 'Evolução',
-  peso: 'Peso', altura: 'Altura', imc: 'IMC', classificacao: 'Classificação',
+const FIELD_LABEL_KEYS: Record<string, string> = {
+  nome: 'nome', cpf: 'cpf', data_nascimento: 'data_nascimento',
+  endereco: 'endereco', celular: 'celular', email: 'email',
+  contato_emergencia: 'contato_emergencia', como_chegou: 'como_chegou',
+  tempo_escovacao: 'tempo_escovacao', tipo_escova: 'tipo_escova',
+  usa_fio_dental: 'usa_fio_dental', frequencia_fio: 'frequencia_fio',
+  sangramento_gengival: 'sangramento_gengival', sensibilidade: 'sensibilidade',
+  dor_dente: 'dor_dente', bruxismo_diurno: 'bruxismo_diurno',
+  bruxismo_noturno: 'bruxismo_noturno', aperta_dentes: 'aperta_dentes',
+  range_dentes: 'range_dentes', usa_placa: 'usa_placa',
+  tratamento_anterior: 'tratamento_anterior', dor_atm: 'dor_atm',
+  estalidos: 'estalidos', zumbido: 'zumbido',
+  diabetes: 'diabetes', hipertensao: 'hipertensao',
+  historico_medico: 'historico_medico', medicamentos: 'medicamentos',
+  alergia: 'alergia', alergia_qual: 'alergia_qual',
+  anticoncepcional: 'anticoncepcional', anticoncepcional_qual: 'anticoncepcional_qual',
+  gravidez: 'gravidez', gravidez_meses: 'gravidez_meses',
+  fumante: 'fumante', fumante_frequencia: 'fumante_frequencia',
+  queixa_principal: 'queixa_principal', queixa_detalhes: 'queixa_detalhes',
+  queixa_inicio: 'queixa_inicio', queixa_evolucao: 'queixa_evolucao',
+  peso: 'peso', altura: 'altura', imc: 'imc', classificacao: 'classificacao',
 };
-
-function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '—';
-  if (typeof value === 'boolean') return value ? 'Sim' : 'Não';
-  if (typeof value === 'object') {
-    if (Array.isArray(value)) return value.join(', ');
-    return JSON.stringify(value);
-  }
-  return String(value);
-}
 
 export default function PatientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const t = useTranslations('patientDetail');
+  const tCommon = useTranslations('common');
   const [patient, setPatient] = useState<PatientData | null>(null);
   const [submission, setSubmission] = useState<SubmissionData | null>(null);
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(['dados_pessoais']));
   const [loading, setLoading] = useState(true);
   const [linkCopied, setLinkCopied] = useState(false);
   const router = useRouter();
+
+  function formatValue(value: unknown): string {
+    if (value === null || value === undefined) return tCommon('noValue');
+    if (typeof value === 'boolean') return value ? tCommon('yes') : tCommon('no');
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) return value.join(', ');
+      return JSON.stringify(value);
+    }
+    return String(value);
+  }
 
   useEffect(() => {
     loadPatient();
@@ -165,12 +168,12 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
     if (!submission) return;
 
     const confirmed = window.confirm(
-      `Tem certeza que deseja excluir o prontuário de ${patient?.name}?\n\nEssa ação não pode ser desfeita. O paciente e todas as respostas serão removidos.`
+      t('deleteConfirm', { name: patient?.name || '' })
     );
     if (!confirmed) return;
 
     const doubleConfirm = window.confirm(
-      'CONFIRMAÇÃO FINAL: Todos os dados deste paciente serão apagados permanentemente. Continuar?'
+      t('deleteDoubleConfirm')
     );
     if (!doubleConfirm) return;
 
@@ -197,7 +200,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   if (!patient) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground/90">Paciente não encontrado.</p>
+        <p className="text-muted-foreground/90">{t('notFound')}</p>
       </div>
     );
   }
@@ -205,21 +208,21 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const scoreCards = submission
     ? [
         {
-          label: 'Estresse Lipp',
+          label: t('scores.lipp'),
           score: submission.lipp_score,
           max: 12,
           classification: submission.lipp_classification,
           color: getScoreColor(submission.lipp_score, 12),
         },
         {
-          label: 'Bruxismo',
+          label: t('scores.bruxism'),
           score: submission.bruxism_score,
           max: 20,
           classification: submission.bruxism_classification,
           color: getScoreColor(submission.bruxism_score, 20),
         },
         {
-          label: 'Epworth',
+          label: t('scores.epworth'),
           score: submission.epworth_score,
           max: 24,
           classification: submission.epworth_classification,
@@ -253,7 +256,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-foreground">{patient.name}</h1>
           <p className="text-sm text-muted-foreground/80 font-mono mt-0.5">
-            CPF: {formatCPF(patient.cpf)}
+            {t('cpfLabel')}: {formatCPF(patient.cpf)}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -265,7 +268,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.04] text-foreground/90 border border-white/[0.08] text-sm font-medium hover:bg-white/[0.08] transition-colors"
             >
               <Download className="w-4 h-4" />
-              PDF
+              {tCommon('pdf')}
             </a>
           )}
           <button
@@ -273,14 +276,14 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.04] text-foreground/70 border border-white/[0.08] text-sm font-medium hover:bg-white/[0.08] transition-colors"
           >
             <GitCompareArrows className="w-4 h-4" />
-            Comparar
+            {tCommon('compare')}
           </button>
           <button
             onClick={generateControlLink}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/25 text-sm font-medium hover:bg-amber-500/25 transition-colors"
           >
             {linkCopied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
-            {linkCopied ? 'Copiado!' : 'Link controle'}
+            {linkCopied ? t('controlLinkCopied') : t('controlLink')}
           </button>
         </div>
       </div>
@@ -316,12 +319,12 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                 : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
             }`}
           >
-            {submission.status === 'completed' ? 'Completo' : 'Em andamento'}
+            {submission.status === 'completed' ? t('statusComplete') : t('statusInProgress')}
           </span>
           <span className="text-xs text-muted-foreground/80">
             {submission.completed_at
-              ? `Finalizado em ${new Date(submission.completed_at).toLocaleDateString('pt-BR')}`
-              : `Iniciado em ${new Date(submission.created_at).toLocaleDateString('pt-BR')}`}
+              ? `${t('finishedAt')} ${new Date(submission.completed_at).toLocaleDateString('pt-BR')}`
+              : `${t('startedAt')} ${new Date(submission.created_at).toLocaleDateString('pt-BR')}`}
           </span>
         </div>
       )}
@@ -339,7 +342,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                   className="w-full flex items-center justify-between px-4 py-3 bg-white/[0.02] hover:bg-white/[0.04] transition-colors text-left"
                 >
                   <span className="text-sm font-medium text-foreground/95">
-                    {SECTION_LABELS[sectionKey] || sectionKey}
+                    {SECTION_LABEL_KEYS[sectionKey] ? t(`sectionLabels.${SECTION_LABEL_KEYS[sectionKey]}`) : sectionKey}
                   </span>
                   <span className="text-xs text-muted-foreground/80">
                     {isOpen ? '▲' : '▼'}
@@ -350,7 +353,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
                     {Object.entries(data).map(([key, value]) => (
                       <div key={key} className="flex justify-between items-baseline gap-4">
                         <span className="text-xs text-muted-foreground/90 shrink-0">
-                          {FIELD_LABELS[key] || key}
+                          {FIELD_LABEL_KEYS[key] ? t(`fieldLabels.${FIELD_LABEL_KEYS[key]}`) : key}
                         </span>
                         <span className="text-sm text-foreground/90 text-right truncate">
                           {formatValue(value)}
@@ -365,7 +368,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
         </div>
       ) : (
         <p className="text-sm text-muted-foreground/80 py-8 text-center">
-          Nenhum formulário encontrado para este paciente.
+          {t('noForm')}
         </p>
       )}
 
@@ -377,7 +380,7 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
             className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-red-400/70 hover:text-red-400 hover:bg-red-500/5 border border-red-500/10 hover:border-red-500/20 transition-colors text-sm"
           >
             <Trash2 className="w-4 h-4" />
-            Excluir prontuário e paciente
+            {t('deleteButton')}
           </button>
         </div>
       )}
