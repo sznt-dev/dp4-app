@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { checkRateLimit, getClientId, rateLimitResponse } from '@/lib/security/rate-limit';
 import { isValidUUID, sanitizeString } from '@/lib/security/validate';
+import { sendWebhookToDeya } from '@/lib/webhook-deya';
 
 export async function POST(request: Request) {
   // Rate limit
@@ -72,6 +73,29 @@ export async function POST(request: Request) {
       action: 'form_completed',
       details: scores,
     });
+
+    // Send webhook to DEYA (async, doesn't block response)
+    if (submission?.patient_id && submission?.dentist_id) {
+      const { data: fullSubmission } = await supabase
+        .from('dp4_submissions')
+        .select('*, dp4_patients!patient_id(*), dp4_dentists!dentist_id(*)')
+        .eq('id', submissionId)
+        .single();
+
+      if (fullSubmission) {
+        sendWebhookToDeya(fullSubmission as any).catch((err) => {
+          console.error('DEYA webhook failed (non-blocking):', err);
+          // Log the failure
+          supabase.from('dp4_logs').insert({
+            patient_id: submission.patient_id,
+            submission_id: submissionId,
+            dentist_id: submission.dentist_id,
+            action: 'webhook_sent',
+            details: { error: err.message, target: 'deya' },
+          });
+        });
+      }
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
