@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useCurrentDentist } from '@/lib/hooks/use-current-dentist';
 import { Search, ChevronRight } from 'lucide-react';
 
 interface PatientRow {
@@ -25,18 +26,28 @@ export default function PatientsPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const t = useTranslations('patients');
+  const { dentist: currentDentist, loading: dentistLoading } = useCurrentDentist();
 
   useEffect(() => {
-    loadPatients();
-  }, []);
+    if (!dentistLoading && currentDentist) {
+      loadPatients();
+    }
+  }, [dentistLoading, currentDentist]);
 
   async function loadPatients() {
     const supabase = createClient();
 
-    const { data: patientsData } = await supabase
+    // Filter by dentist — admin sees all, dentist sees only theirs
+    let q = supabase
       .from('dp4_patients')
       .select('id, name, cpf, created_at')
       .order('created_at', { ascending: false });
+
+    if (currentDentist && !currentDentist.isAdmin) {
+      q = q.eq('dentist_id', currentDentist.id);
+    }
+
+    const { data: patientsData } = await q;
 
     if (!patientsData) {
       setLoading(false);

@@ -40,12 +40,16 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userName, setUserName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setUserName(user.email?.split('@')[0] || tCommon('dentist'));
+        setUserName(user.user_metadata?.name || user.email?.split('@')[0] || tCommon('dentist'));
+        // Admin detection: check user_metadata or known admin emails
+        const adminEmails = ['admin@dp4.com', 'admin@admin.com', 'admin@sibx.com.br'];
+        setIsAdmin(user.user_metadata?.role === 'admin' || adminEmails.includes(user.email || ''));
       }
     });
   }, []);
@@ -103,7 +107,7 @@ export default function DashboardLayout({
           <p className="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-foreground/40">
             Admin
           </p>
-          {NAV_ITEMS.filter((item) => item.admin).map((item) => {
+          {NAV_ITEMS.filter((item) => item.admin && isAdmin).map((item) => {
             const isActive =
               pathname === item.href || pathname.startsWith(item.href + '/');
             return (

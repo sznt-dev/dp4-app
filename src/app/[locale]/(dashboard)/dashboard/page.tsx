@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useCurrentDentist } from '@/lib/hooks/use-current-dentist';
 import { Users, FileCheck, Clock, Activity, Link2, Copy, Check } from 'lucide-react';
 
 interface DashboardStats {
@@ -38,45 +39,40 @@ export default function DashboardPage() {
   const t = useTranslations('dashboard');
   const tCommon = useTranslations('common');
   const locale = useLocale();
+  const { dentist: currentDentist, loading: dentistLoading } = useCurrentDentist();
 
   useEffect(() => {
-    loadDashboard();
-  }, []);
+    if (!dentistLoading && currentDentist) {
+      loadDashboard();
+    }
+  }, [dentistLoading, currentDentist]);
 
   async function loadDashboard() {
     const supabase = createClient();
 
-    // Get current user's dentist slug for permanent link
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: dentist } = await supabase
-        .from('dp4_dentists')
-        .select('unique_slug')
-        .eq('email', user.email)
-        .single();
-      if (dentist?.unique_slug) {
-        setPermanentLink(`${window.location.origin}/d/${dentist.unique_slug}`);
-      }
+    // Set permanent link from current dentist's slug
+    if (currentDentist?.unique_slug) {
+      setPermanentLink(`${window.location.origin}/d/${currentDentist.unique_slug}`);
     }
-    // If no dentist found (dev mode), use first dentist
-    if (!permanentLink) {
-      const { data: firstDentist } = await supabase
-        .from('dp4_dentists')
-        .select('unique_slug')
-        .not('unique_slug', 'is', null)
-        .limit(1)
-        .single();
-      if (firstDentist?.unique_slug) {
-        setPermanentLink(`${window.location.origin}/d/${firstDentist.unique_slug}`);
-      }
+
+    // Build queries — admin sees all, dentist sees only their own
+    const dentistFilter = currentDentist?.isAdmin ? null : currentDentist?.id;
+
+    let patientsQ = supabase.from('dp4_patients').select('id', { count: 'exact', head: true });
+    let completedQ = supabase.from('dp4_submissions').select('id', { count: 'exact', head: true }).eq('status', 'completed');
+    let pendingQ = supabase.from('dp4_submissions').select('id', { count: 'exact', head: true }).eq('status', 'in_progress');
+    let scoresQ = supabase.from('dp4_submissions').select('bruxism_score').eq('status', 'completed').not('bruxism_score', 'is', null);
+
+    if (dentistFilter) {
+      patientsQ = patientsQ.eq('dentist_id', dentistFilter);
+      completedQ = completedQ.eq('dentist_id', dentistFilter);
+      pendingQ = pendingQ.eq('dentist_id', dentistFilter);
+      scoresQ = scoresQ.eq('dentist_id', dentistFilter);
     }
 
     // Get stats
     const [patientsRes, completedRes, pendingRes, scoresRes] = await Promise.all([
-      supabase.from('dp4_patients').select('id', { count: 'exact', head: true }),
-      supabase.from('dp4_submissions').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
-      supabase.from('dp4_submissions').select('id', { count: 'exact', head: true }).eq('status', 'in_progress'),
-      supabase.from('dp4_submissions').select('bruxism_score').eq('status', 'completed').not('bruxism_score', 'is', null),
+      patientsQ, completedQ, pendingQ, scoresQ,
     ]);
 
     const scores = scoresRes.data || [];
@@ -91,12 +87,16 @@ export default function DashboardPage() {
       avgBruxismScore: avgScore,
     });
 
-    // Get recent submissions with patient names
-    const { data: submissions } = await supabase
+    // Get recent submissions with patient names (filtered by dentist)
+    let recentQ = supabase
       .from('dp4_submissions')
       .select('id, status, created_at, completed_at, bruxism_score, bruxism_classification, patient_id')
       .order('created_at', { ascending: false })
       .limit(10);
+    if (dentistFilter) {
+      recentQ = recentQ.eq('dentist_id', dentistFilter);
+    }
+    const { data: submissions } = await recentQ;
 
     if (submissions) {
       const patientIds = [...new Set(submissions.map((s) => s.patient_id).filter(Boolean))];

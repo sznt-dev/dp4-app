@@ -136,12 +136,15 @@ CREATE POLICY "logs_select_auth" ON dp4_logs
 -- Prevents data leaking via websocket subscriptions
 -- Run these in Supabase Dashboard > Database > Replication
 -- or via SQL:
-ALTER PUBLICATION supabase_realtime DROP TABLE IF EXISTS dp4_patients;
-ALTER PUBLICATION supabase_realtime DROP TABLE IF EXISTS dp4_submissions;
-ALTER PUBLICATION supabase_realtime DROP TABLE IF EXISTS dp4_submission_progress;
-ALTER PUBLICATION supabase_realtime DROP TABLE IF EXISTS dp4_logs;
-ALTER PUBLICATION supabase_realtime DROP TABLE IF EXISTS dp4_links;
-ALTER PUBLICATION supabase_realtime DROP TABLE IF EXISTS dp4_dentists;
+DO $$
+BEGIN
+  BEGIN ALTER PUBLICATION supabase_realtime DROP TABLE dp4_patients; EXCEPTION WHEN OTHERS THEN NULL; END;
+  BEGIN ALTER PUBLICATION supabase_realtime DROP TABLE dp4_submissions; EXCEPTION WHEN OTHERS THEN NULL; END;
+  BEGIN ALTER PUBLICATION supabase_realtime DROP TABLE dp4_submission_progress; EXCEPTION WHEN OTHERS THEN NULL; END;
+  BEGIN ALTER PUBLICATION supabase_realtime DROP TABLE dp4_logs; EXCEPTION WHEN OTHERS THEN NULL; END;
+  BEGIN ALTER PUBLICATION supabase_realtime DROP TABLE dp4_links; EXCEPTION WHEN OTHERS THEN NULL; END;
+  BEGIN ALTER PUBLICATION supabase_realtime DROP TABLE dp4_dentists; EXCEPTION WHEN OTHERS THEN NULL; END;
+END $$;
 
 -- =============================================
 -- 10. SECURITY VERIFICATION QUERIES
