@@ -266,14 +266,29 @@ export default function FormFlow({
           scorePayload.epworth_classification = scoresTyped.epworth.classification;
         }
 
-        await fetch('/api/submissions/complete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            submissionId: submissionIdRef.current,
-            scores: scorePayload,
-          }),
-        });
+        // Wait for any pending save to complete
+        if (pendingSaveRef.current && saveTimerRef.current) {
+          clearTimeout(saveTimerRef.current);
+          saveTimerRef.current = null;
+        }
+
+        // Only call complete if we have a real submission ID (not dev-xxx)
+        const sid = submissionIdRef.current;
+        if (sid && !sid.startsWith('dev-')) {
+          const res = await fetch('/api/submissions/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              submissionId: sid,
+              scores: scorePayload,
+            }),
+          });
+          if (!res.ok) {
+            console.error('[DP4 Complete] Server error:', res.status, await res.text());
+          }
+        } else {
+          console.warn('[DP4 Complete] No valid submission ID, skipping completion call. ID:', sid);
+        }
       } catch (error) {
         console.error('[DP4 Complete error]', error);
       }

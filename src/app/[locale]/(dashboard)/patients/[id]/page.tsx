@@ -33,6 +33,7 @@ interface SubmissionData {
   estresse_lipp: Record<string, unknown>;
   grau_bruxismo: Record<string, unknown>;
   teste_epworth: Record<string, unknown>;
+  answers_flat: Record<string, unknown>;
   lipp_score: number | null;
   lipp_classification: string | null;
   bruxism_score: number | null;
@@ -91,6 +92,10 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(['dados_pessoais']));
   const [loading, setLoading] = useState(true);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [dentistNotes, setDentistNotes] = useState('');
+  const [notesOriginal, setNotesOriginal] = useState('');
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [notesSaved, setNotesSaved] = useState(false);
   const router = useRouter();
 
   function formatValue(value: unknown): string {
@@ -143,8 +148,37 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
       .limit(1)
       .single();
 
-    if (sub) setSubmission(sub);
+    if (sub) {
+      setSubmission(sub);
+      // Load dentist notes from answers_flat or prontuario
+      const notes = (sub.answers_flat as any)?.dentist_notes || (sub.prontuario as any)?.dentist_notes || '';
+      setDentistNotes(notes);
+      setNotesOriginal(notes);
+    }
     setLoading(false);
+  }
+
+  async function saveDentistNotes() {
+    if (!submission) return;
+    setSavingNotes(true);
+    try {
+      const supabase = createClient();
+      const currentFlat = (submission.answers_flat || {}) as Record<string, unknown>;
+      const { error } = await supabase
+        .from('dp4_submissions')
+        .update({
+          answers_flat: { ...currentFlat, dentist_notes: dentistNotes },
+        })
+        .eq('id', submission.id);
+      if (!error) {
+        setNotesOriginal(dentistNotes);
+        setNotesSaved(true);
+        setTimeout(() => setNotesSaved(false), 2000);
+      }
+    } catch (err) {
+      console.error('Failed to save notes:', err);
+    }
+    setSavingNotes(false);
   }
 
   function toggleSection(section: string) {
@@ -382,6 +416,37 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
         <p className="text-sm text-muted-foreground/80 py-8 text-center">
           {t('noForm')}
         </p>
+      )}
+
+      {/* Dentist Notes */}
+      {submission && (
+        <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+          <div className="px-4 py-3 bg-white/[0.02] flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground/95">
+              {t('notesTitle') || 'Observacoes do Dentista'}
+            </span>
+            {dentistNotes !== notesOriginal && (
+              <button
+                onClick={saveDentistNotes}
+                disabled={savingNotes}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/15 transition-colors disabled:opacity-50"
+              >
+                {savingNotes ? '...' : notesSaved ? '✓' : (t('saveNotes') || 'Salvar')}
+              </button>
+            )}
+            {notesSaved && dentistNotes === notesOriginal && (
+              <span className="text-xs text-emerald-400">✓ {t('saved') || 'Salvo'}</span>
+            )}
+          </div>
+          <div className="px-4 py-3 bg-white/[0.01]">
+            <textarea
+              value={dentistNotes}
+              onChange={(e) => setDentistNotes(e.target.value)}
+              placeholder={t('notesPlaceholder') || 'Adicione observacoes, anotacoes clinicas ou comentarios sobre este paciente...'}
+              className="w-full min-h-[100px] bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-foreground/90 placeholder:text-muted-foreground/50 resize-y focus:outline-none focus:border-amber-500/30 transition-colors"
+            />
+          </div>
+        </div>
       )}
 
       {/* Danger zone — delete */}
