@@ -17,8 +17,13 @@ export async function middleware(request: NextRequest) {
     return await updateSession(request);
   }
 
-  // Run Supabase session update first (handles auth cookies)
+  // Run Supabase session update first (handles auth cookies + redirect if not authenticated)
   const supabaseResponse = await updateSession(request);
+
+  // If Supabase returned a redirect (e.g. to /login), respect it — don't override with intl
+  if (supabaseResponse.status === 307 || supabaseResponse.status === 302) {
+    return supabaseResponse;
+  }
 
   // Then run intl middleware (handles locale detection + rewrite)
   const intlResponse = intlMiddleware(request);

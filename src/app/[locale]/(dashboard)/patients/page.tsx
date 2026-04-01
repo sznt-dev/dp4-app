@@ -29,7 +29,11 @@ export default function PatientsPage() {
   const { dentist: currentDentist, loading: dentistLoading } = useCurrentDentist();
 
   useEffect(() => {
-    if (!dentistLoading && currentDentist) {
+    if (!dentistLoading) {
+      if (!currentDentist) {
+        router.push('/login');
+        return;
+      }
       loadPatients();
     }
   }, [dentistLoading, currentDentist]);

@@ -42,7 +42,12 @@ export default function DashboardPage() {
   const { dentist: currentDentist, loading: dentistLoading } = useCurrentDentist();
 
   useEffect(() => {
-    if (!dentistLoading && currentDentist) {
+    if (!dentistLoading) {
+      if (!currentDentist) {
+        // Not logged in — redirect to login
+        router.push('/login');
+        return;
+      }
       loadDashboard();
     }
   }, [dentistLoading, currentDentist]);
