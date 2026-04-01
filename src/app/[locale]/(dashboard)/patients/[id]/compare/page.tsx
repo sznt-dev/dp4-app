@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
+import { useCurrentDentist } from '@/lib/hooks/use-current-dentist';
 import { ArrowLeft, TrendingDown, TrendingUp, Minus, Download } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 
@@ -91,20 +92,33 @@ export default function ComparePage({ params }: { params: Promise<{ id: string }
     'pt-br': 'pt-BR', 'pt-pt': 'pt-PT', 'es': 'es', 'en': 'en-US',
   };
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
+  const { dentist: currentDentist, loading: dentistLoading } = useCurrentDentist();
 
-  async function loadData() {
+  useEffect(() => {
+    if (!dentistLoading) {
+      if (!currentDentist) {
+        router.push('/login');
+        return;
+      }
+      loadData(currentDentist);
+    }
+  }, [id, dentistLoading, currentDentist]);
+
+  async function loadData(myDentist: NonNullable<typeof currentDentist>) {
     const supabase = createClient();
 
-    const { data: patient } = await supabase
-      .from('dp4_patients')
-      .select('name')
-      .eq('id', id)
-      .single();
+    // SECURITY: verify patient belongs to this dentist
+    let q = supabase.from('dp4_patients').select('name, dentist_id').eq('id', id);
+    if (!myDentist.isAdmin) {
+      q = q.eq('dentist_id', myDentist.id);
+    }
+    const { data: patient } = await q.single();
 
-    if (patient) setPatientName(patient.name);
+    if (!patient) {
+      router.push('/patients');
+      return;
+    }
+    setPatientName(patient.name);
 
     // Get all completed submissions for this patient
     const { data: submissions } = await supabase

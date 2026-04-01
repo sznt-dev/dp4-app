@@ -44,35 +44,34 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!dentistLoading) {
       if (!currentDentist) {
-        // Not logged in — redirect to login
         router.push('/login');
         return;
       }
-      loadDashboard();
+      loadDashboard(currentDentist);
     }
   }, [dentistLoading, currentDentist]);
 
-  async function loadDashboard() {
+  async function loadDashboard(myDentist: NonNullable<typeof currentDentist>) {
     const supabase = createClient();
 
     // Set permanent link from current dentist's slug
-    if (currentDentist?.unique_slug) {
-      setPermanentLink(`${window.location.origin}/d/${currentDentist.unique_slug}`);
+    if (myDentist.unique_slug) {
+      setPermanentLink(`${window.location.origin}/d/${myDentist.unique_slug}`);
     }
 
-    // Build queries — admin sees all, dentist sees only their own
-    const dentistFilter = currentDentist?.isAdmin ? null : currentDentist?.id;
+    // SECURITY: dentist ALWAYS filters by their own ID. Only admin sees all.
+    const dentistId = myDentist.isAdmin ? null : myDentist.id;
 
     let patientsQ = supabase.from('dp4_patients').select('id', { count: 'exact', head: true });
     let completedQ = supabase.from('dp4_submissions').select('id', { count: 'exact', head: true }).eq('status', 'completed');
     let pendingQ = supabase.from('dp4_submissions').select('id', { count: 'exact', head: true }).eq('status', 'in_progress');
     let scoresQ = supabase.from('dp4_submissions').select('bruxism_score').eq('status', 'completed').not('bruxism_score', 'is', null);
 
-    if (dentistFilter) {
-      patientsQ = patientsQ.eq('dentist_id', dentistFilter);
-      completedQ = completedQ.eq('dentist_id', dentistFilter);
-      pendingQ = pendingQ.eq('dentist_id', dentistFilter);
-      scoresQ = scoresQ.eq('dentist_id', dentistFilter);
+    if (dentistId) {
+      patientsQ = patientsQ.eq('dentist_id', dentistId);
+      completedQ = completedQ.eq('dentist_id', dentistId);
+      pendingQ = pendingQ.eq('dentist_id', dentistId);
+      scoresQ = scoresQ.eq('dentist_id', dentistId);
     }
 
     // Get stats
@@ -98,8 +97,8 @@ export default function DashboardPage() {
       .select('id, status, created_at, completed_at, bruxism_score, bruxism_classification, patient_id')
       .order('created_at', { ascending: false })
       .limit(10);
-    if (dentistFilter) {
-      recentQ = recentQ.eq('dentist_id', dentistFilter);
+    if (dentistId) {
+      recentQ = recentQ.eq('dentist_id', dentistId);
     }
     const { data: submissions } = await recentQ;
 

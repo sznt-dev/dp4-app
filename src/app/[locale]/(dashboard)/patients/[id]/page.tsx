@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
+import { useCurrentDentist } from '@/lib/hooks/use-current-dentist';
 import { ArrowLeft, Copy, Check, Link2, Download, GitCompareArrows, Trash2 } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 
@@ -102,20 +103,31 @@ export default function PatientDetailPage({ params }: { params: Promise<{ id: st
     return String(value);
   }
 
-  useEffect(() => {
-    loadPatient();
-  }, [id]);
+  const { dentist: currentDentist, loading: dentistLoading } = useCurrentDentist();
 
-  async function loadPatient() {
+  useEffect(() => {
+    if (!dentistLoading) {
+      if (!currentDentist) {
+        router.push('/login');
+        return;
+      }
+      loadPatient(currentDentist);
+    }
+  }, [id, dentistLoading, currentDentist]);
+
+  async function loadPatient(myDentist: NonNullable<typeof currentDentist>) {
     const supabase = createClient();
 
-    const { data: patientData } = await supabase
-      .from('dp4_patients')
-      .select('*')
-      .eq('id', id)
-      .single();
+    // SECURITY: verify this patient belongs to the logged-in dentist
+    let q = supabase.from('dp4_patients').select('*').eq('id', id);
+    if (!myDentist.isAdmin) {
+      q = q.eq('dentist_id', myDentist.id);
+    }
+    const { data: patientData } = await q.single();
 
     if (!patientData) {
+      // Patient not found or doesn't belong to this dentist
+      router.push('/patients');
       setLoading(false);
       return;
     }

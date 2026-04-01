@@ -34,21 +34,21 @@ export default function PatientsPage() {
         router.push('/login');
         return;
       }
-      loadPatients();
+      loadPatients(currentDentist);
     }
   }, [dentistLoading, currentDentist]);
 
-  async function loadPatients() {
+  async function loadPatients(myDentist: NonNullable<typeof currentDentist>) {
     const supabase = createClient();
 
-    // Filter by dentist — admin sees all, dentist sees only theirs
+    // SECURITY: dentist ALWAYS filters by their own ID. Only admin sees all.
     let q = supabase
       .from('dp4_patients')
       .select('id, name, cpf, created_at')
       .order('created_at', { ascending: false });
 
-    if (currentDentist && !currentDentist.isAdmin) {
-      q = q.eq('dentist_id', currentDentist.id);
+    if (!myDentist.isAdmin) {
+      q = q.eq('dentist_id', myDentist.id);
     }
 
     const { data: patientsData } = await q;
