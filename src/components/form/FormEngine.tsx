@@ -195,7 +195,11 @@ const FormEngine = forwardRef<FormEngineHandle, FormEngineProps>(function FormEn
 
       // Auto-save
       if (onAutoSave && currentQuestion) {
-        const dbField = currentQuestion.dbField;
+        // If this is a followUp answer, use the followUp's dbField instead of the parent's
+        let dbField = currentQuestion.dbField;
+        if (currentQuestion.followUp && questionId === currentQuestion.followUp.id) {
+          dbField = currentQuestion.followUp.dbField;
+        }
         const dotIdx = dbField.indexOf('.');
         const section = dotIdx > -1 ? dbField.substring(0, dotIdx) : dbField;
 
